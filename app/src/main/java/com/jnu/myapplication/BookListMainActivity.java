@@ -105,7 +105,7 @@ public class BookListMainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            //提取出view出来用在viewholder
+            //提取出view 用在viewholder
             View view= LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_main,viewGroup,false);
             return new ViewHolder(view);
