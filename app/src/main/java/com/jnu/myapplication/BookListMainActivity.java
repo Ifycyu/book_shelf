@@ -28,28 +28,28 @@ public class BookListMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerViewMain=findViewById(R.id.recycle_view_books);
-        //设置布局
+        //布局
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMain.setLayoutManager(linearLayoutManager);
 
         mainStringSet=new ArrayList<Book>();
 
-        mainStringSet.add(new Book("软件项目管理案例教程（第4版）", R.drawable.book_2));
-        mainStringSet.add(new Book("创新工程实践", R.drawable.book_no_name));
         mainStringSet.add(new Book("信息安全数学基础（第2版）", R.drawable.book_1));
+        mainStringSet.add(new Book("软件项目管理案例教程（第4版）", R.drawable.book_2));
+        mainStringSet.add(new Book("书", R.drawable.book_no_name));
 
-        //String []mainDataSet= new String[]{"item 1","item 2","item 3","item 4","item 5"};
+
         //设置数据接收渲染器
         MainRecycleViewAdapter mainRecycleViewAdapter=new MainRecycleViewAdapter(mainStringSet);
         recyclerViewMain.setAdapter(mainRecycleViewAdapter);
 
     }
-
+//
     public ArrayList<Book> getListBooks(){
         return mainStringSet;
     }
-
+//
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         //菜单menu的选项执行事件
@@ -66,22 +66,24 @@ public class BookListMainActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    //adapter重写三个方法，并且还得在内部类设置viewholder类
+    //adapter重写三个方法
+    // 在内部类设置viewholder类
     public class MainRecycleViewAdapter extends RecyclerView.Adapter<MainRecycleViewAdapter.ViewHolder> {
         //private String[]localDataset;
         private ArrayList<Book>localDataset;
-        //创建viewholder，针对每一个item生成一个viewholder,相当一个容器，里面的东西自定义
+        //创建viewholder，针对每一个item生成一个viewholder
+        //相当一个容器，里面的东西自定义
         public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
             private final TextView textView;
             private final ImageView imageView;
 
             public ViewHolder(View view) {
                 super(view);
-                //找到传进来的大view中的小构件
+                //找到view
                 imageView=view.findViewById(R.id.image_view_book_cover);
                 textView = view.findViewById(R.id.text_view_book_title);
 
-                //设置这个holder的监听事件
+                //holder的监听事件
                 view.setOnCreateContextMenuListener(this);
             }
             public TextView getTextView() {
@@ -94,7 +96,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
             @Override
             public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                //监听事件的菜单选项样式，那个选项，哪一个item，显示信息
+                //监听事件的菜单选项样式，选项，item，显示信息
                 contextMenu.add(0,menu_id_add,getAdapterPosition(),"add"+getAdapterPosition());
                 contextMenu.add(0, menu_id_delete,getAdapterPosition(),"delete"+getAdapterPosition());
             }
@@ -123,12 +125,12 @@ public class BookListMainActivity extends AppCompatActivity {
             return localDataset.size();
         }
     }
-
+    //book类
     public class Book{
         private String title;
         private int image_R_id;
-        public Book(String t, int id){
-            title=t;
+        public Book(String name, int id){
+            title=name;
             image_R_id=id;
         }
         String getTitle(){
