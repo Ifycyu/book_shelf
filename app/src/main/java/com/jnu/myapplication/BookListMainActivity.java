@@ -1,27 +1,64 @@
 package com.jnu.myapplication;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.jnu.myapplication.data.BookItem;
+
+import java.util.ArrayList;
+import android.widget.Button;
 public class BookListMainActivity extends AppCompatActivity {
 
     public static final int menu_id_add = 1;
     public static final int menu_id_delete = 2;
-    private ArrayList<Book> mainStringSet;
+    private ArrayList<BookItem> bookItems;
+    private MainRecycleViewAdapter mainRecycleViewAdapter;
+
+// 返回activity
+    private ActivityResultLauncher<Intent> addDataLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
+            ,result -> {
+        if(null!=result){
+            Intent intent =result.getData();
+            if(result.getResultCode()==InputBookItemActivity.RESULT_CODE_SUCCESS)
+            {
+                Bundle bundle = intent.getExtras();
+                String title = bundle.getString("title","unset_title");
+                String author = bundle.getString("author");
+                String translator = bundle.getString("translator");
+                String publisher = bundle.getString("publisher");
+                int year = bundle.getInt("year");
+                int month = bundle.getInt("month");
+                int isbn = bundle.getInt("isbn");
+
+                int new_book_position = bookItems.size();
+                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_1));
+                mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
+
+                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
+            }
+        }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,21 +70,31 @@ public class BookListMainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMain.setLayoutManager(linearLayoutManager);
 
-        mainStringSet=new ArrayList<Book>();
+        bookItems =new ArrayList<BookItem>();
 
-        mainStringSet.add(new Book("信息安全数学基础（第2版）", R.drawable.book_1));
-        mainStringSet.add(new Book("软件项目管理案例教程（第4版）", R.drawable.book_2));
-        mainStringSet.add(new Book("书", R.drawable.book_no_name));
+
+        bookItems.add(new BookItem("信息安全数学基础（第2版）", R.drawable.book_1));
+        bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
+        bookItems.add(new BookItem("书", R.drawable.book_no_name));
 
 
         //设置数据接收渲染器
-        MainRecycleViewAdapter mainRecycleViewAdapter=new MainRecycleViewAdapter(mainStringSet);
+        mainRecycleViewAdapter= new MainRecycleViewAdapter(bookItems);
         recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+        FloatingActionButton add_book_button =(FloatingActionButton) findViewById(R.id.add_book);
+        add_book_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(BookListMainActivity.this,"Add a new book",Toast.LENGTH_LONG).show();//不能直接用this
+                Intent intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
+                addDataLauncher.launch(intent);
+            }
+        });
 
     }
 //
-    public ArrayList<Book> getListBooks(){
-        return mainStringSet;
+    public ArrayList<BookItem> getListBooks(){
+        return bookItems;
     }
 //
     @Override
@@ -55,53 +102,89 @@ public class BookListMainActivity extends AppCompatActivity {
         //菜单menu的选项执行事件
         switch (item.getItemId())
         {
-            case menu_id_add:
-                Toast.makeText(this,"item add "+ item.getOrder()+" clicked",Toast.LENGTH_LONG).show();
-                break;
+//            case menu_id_add:
+//                Intent intent = new Intent(this, InputBookItemActivity.class);
+//                addDataLauncher.launch(intent);
+////                startActivity(intent);
+//
+//                /*
+//                bookItems.add(item.getOrder(),new BookItem("new book", R.drawable.book_1));
+//                mainRecycleViewAdapter.notifyItemInserted(item.getOrder());
+//                */
+//                break;
             case menu_id_delete:
-                Toast.makeText(this,"item delete "+ item.getOrder()+" clicked",Toast.LENGTH_LONG).show();
-                break;
+                AlertDialog alertDialog = new AlertDialog.Builder(this)
+                        .setTitle(R.string.confirmation)
+                        .setMessage(R.string.sure_to_delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                bookItems.remove(item.getOrder());
+                                mainRecycleViewAdapter.notifyItemRemoved(item.getOrder());
+                            }
+                        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                            }
+                        }).create();
+                alertDialog.show();
+                break;
         }
         return super.onContextItemSelected(item);
     }
 
+
+
+
     //adapter重写三个方法
     // 在内部类设置viewholder类
     public class MainRecycleViewAdapter extends RecyclerView.Adapter<MainRecycleViewAdapter.ViewHolder> {
-        //private String[]localDataset;
-        private ArrayList<Book>localDataset;
+        private ArrayList<BookItem>localDataset;
         //创建viewholder，针对每一个item生成一个viewholder
         //相当一个容器，里面的东西自定义
         public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
-            private final TextView textView;
+            private final TextView textTitle;
             private final ImageView imageView;
+            private final TextView publisher_text;
+            private final TextView publisher_time;
 
-            public ViewHolder(View view) {
-                super(view);
-                //找到view
-                imageView=view.findViewById(R.id.image_view_book_cover);
-                textView = view.findViewById(R.id.text_view_book_title);
 
-                //holder的监听事件
-                view.setOnCreateContextMenuListener(this);
+            public TextView getPublisher_text() {
+                return publisher_text;
             }
-            public TextView getTextView() {
-                return textView;
+
+            public TextView getPublisher_time() {
+                return publisher_time;
+            }
+            public TextView getTextTitle() {
+                return textTitle;
             }
 
             public ImageView getImageView() {
                 return imageView;
             }
 
+            public ViewHolder(View view) {
+                super(view);
+                //找到view
+                imageView = view.findViewById(R.id.list_cover_image_view);
+                textTitle = view.findViewById(R.id.list_title_text_view);
+                publisher_text = view.findViewById(R.id.list_publisher_text_view);
+                publisher_time = view.findViewById(R.id.list_pubtime_text_view);
+                //holder的监听事件
+                view.setOnCreateContextMenuListener(this);
+            }
+
+
             @Override
             public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
                 //监听事件的菜单选项样式，选项，item，显示信息
-                contextMenu.add(0,menu_id_add,getAdapterPosition(),"add"+getAdapterPosition());
-                contextMenu.add(0, menu_id_delete,getAdapterPosition(),"delete"+getAdapterPosition());
+//                contextMenu.add(0,menu_id_add,getAdapterPosition(),"add"+getAdapterPosition());
+                contextMenu.add(0, menu_id_delete,getAdapterPosition(),"delete");
             }
         }
-        public MainRecycleViewAdapter(ArrayList<Book> dataset){
+        public MainRecycleViewAdapter(ArrayList<BookItem> dataset){
             localDataset=dataset;
         }
         @NonNull
@@ -109,15 +192,17 @@ public class BookListMainActivity extends AppCompatActivity {
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
             //提取出view 用在viewholder
             View view= LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.item_main,viewGroup,false);
+                    .inflate(R.layout.item_booklist,viewGroup,false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             //holder设置数据
-            holder.getTextView().setText(localDataset.get(position).getTitle());
-            holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());
+            holder.getTextTitle().setText(localDataset.get(position).getTitle());//设置书名
+            holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
+            holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
+            holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
         }
 
         @Override
@@ -125,20 +210,7 @@ public class BookListMainActivity extends AppCompatActivity {
             return localDataset.size();
         }
     }
-    //book类
-    public class Book{
-        private String title;
-        private int image_R_id;
-        public Book(String name, int id){
-            title=name;
-            image_R_id=id;
-        }
-        String getTitle(){
-            return title;
-        }
-        int getCoverResourceId(){
-            return image_R_id;
-        }
-    }
+
+
 
 }
