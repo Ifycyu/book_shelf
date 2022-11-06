@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Book shelf</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="sure_to_delete">Are you sure to delete this item?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+
+    <!--EditBookActivaty-->
+    <string name="book_title_text_view">Title:</string>
+    <string name="book_author_text_view">Author:</string>
+    <string name="book_translator_text_view">Translator:</string>
+    <string name="book_publisher_text_view">Publisher:</string>
+    <string name="book_pubdate_text_view">PubDate:</string>
+    <string name="book_isbn_text_view">ISBN:</string>
+    <string name="book_cover_image_view_hint">BookCover</string>
+    <string name="book_title_edit_text_hint">Title of the Book</string>
+    <string name="book_author_edit_text_hint">Separate multiple by comma</string>
+    <string name="book_translator_edit_text_hint">Separate multiple by comma</string>
+    <string name="book_publisher_edit_text_hint">Publisher of the Book</string>
+    <string name="book_isbn_edit_text_hint">ISBN of the Book</string>
+    <string name="book_pubyear_edit_text_hint">Year</string>
+    <string name="book_pubmonth_edit_text_hint">Mon</string>
+    <string name="label_edit_text_hint">Add labels</string>
+    <string name="website_edit_text_hint">Website</string>
+    <string name="note_edit_text_hint">Notes</string>
 </resources>

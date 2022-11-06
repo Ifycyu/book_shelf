@@ -7,6 +7,13 @@
         <entry key="..\:/Android/MyApplication2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.371" />
         <entry key="..\:/Android/MyApplication2/app/src/main/res/layout/activity_main.xml" value="0.35280797101449274" />
         <entry key="..\:/Android/MyApplication2/app/src/main/res/layout/item_main.xml" value="0.35280797101449274" />
+        <entry key="..\:/Android/library/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3745" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/about.xml" value="0.17" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/activity_input_book_item.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/activity_main.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/item_booklist.xml" value="0.1" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/item_main.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/layout.xml" value="0.37395833333333334" />
       </map>
     </option>
   </component>
