@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,17 +17,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
 
 import java.util.ArrayList;
-import android.widget.Button;
+
 public class BookListMainActivity extends AppCompatActivity {
 
     public static final int menu_id_add = 1;
@@ -42,7 +43,7 @@ public class BookListMainActivity extends AppCompatActivity {
             if(result.getResultCode()==InputBookItemActivity.RESULT_CODE_SUCCESS)
             {
                 Bundle bundle = intent.getExtras();
-                String title = bundle.getString("title","unset_title");
+                String title = bundle.getString("title");
                 String author = bundle.getString("author");
                 String translator = bundle.getString("translator");
                 String publisher = bundle.getString("publisher");
@@ -64,6 +65,26 @@ public class BookListMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        setRecyclerView();//RecyclerView
+        setFloatingActionButton();//悬浮按钮
+        setDrawerLayout();
+
+    }
+    //
+    private void setFloatingActionButton() {
+        FloatingActionButton add_book_button = (FloatingActionButton) findViewById(R.id.add_book);
+        add_book_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(BookListMainActivity.this, "Add a new book", Toast.LENGTH_LONG).show();//不能直接用this
+                Intent intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
+                addDataLauncher.launch(intent);
+            }
+        });
+    }
+//
+    private void setRecyclerView() {
         RecyclerView recyclerViewMain=findViewById(R.id.recycle_view_books);
         //布局
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
@@ -81,18 +102,8 @@ public class BookListMainActivity extends AppCompatActivity {
         //设置数据接收渲染器
         mainRecycleViewAdapter= new MainRecycleViewAdapter(bookItems);
         recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-        FloatingActionButton add_book_button =(FloatingActionButton) findViewById(R.id.add_book);
-        add_book_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(BookListMainActivity.this,"Add a new book",Toast.LENGTH_LONG).show();//不能直接用this
-                Intent intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
-                addDataLauncher.launch(intent);
-            }
-        });
-
     }
-//
+    //
     public ArrayList<BookItem> getListBooks(){
         return bookItems;
     }
@@ -210,7 +221,30 @@ public class BookListMainActivity extends AppCompatActivity {
             return localDataset.size();
         }
     }
+    private void setDrawerLayout() {
+        DrawerLayout mDrawerLayout;
 
+        mDrawerLayout = findViewById(R.id.drawerLayout);
 
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_setting:
+                        startActivity(new Intent(BookListMainActivity.this, SettingActivity.class));
+                        Toast.makeText(BookListMainActivity.this,"setting activity ",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.nav_about:
+                        startActivity(new Intent(BookListMainActivity.this, AboutActivity.class));
+                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                mDrawerLayout.closeDrawers();
+                return false;
+            }
+        });
+    }
 
 }
