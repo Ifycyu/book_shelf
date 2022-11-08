@@ -1,5 +1,6 @@
 package com.jnu.myapplication;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class InputBookItemActivity extends AppCompatActivity {
 
@@ -17,6 +19,26 @@ public class InputBookItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_book_item);
 
+
+
+
+        String title;
+        int Order= -1;
+//        try {
+//            Bundle bundle=getIntent().getExtras();
+//            title = bundle.getString("title");
+//            Order = bundle.getInt("Order");
+//        }catch(Exception e)
+//        {title = "";
+//        }
+        title = this.getIntent().getStringExtra("title");
+        Order = this.getIntent().getIntExtra("Order",0);
+
+
+
+
+
+
         EditText book_title_edit_text = findViewById(R.id.book_title_edit_text);
         EditText book_author_edit_text = findViewById(R.id.book_author_edit_text);
         EditText book_translator_edit_text = findViewById(R.id.book_translator_edit_text);
@@ -25,8 +47,16 @@ public class InputBookItemActivity extends AppCompatActivity {
         EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
         EditText book_isbn_edit_text = findViewById(R.id.book_isbn_edit_text);
 
+        if(null!=title)
+        {
+            book_title_edit_text.setText(title);
+            Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
+        }
+
+
 
         Button button = findViewById(R.id.button_ok);
+        int finalOrder = Order;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,9 +106,17 @@ public class InputBookItemActivity extends AppCompatActivity {
                     isbn = Integer.parseInt(book_isbn_edit_text_string);
                 bundle.putInt("isbn",isbn);
 
+                bundle.putInt("Order", finalOrder);
 
                 intent.putExtras(bundle);
                 setResult(RESULT_CODE_SUCCESS,intent);
+                InputBookItemActivity.this.finish();
+            }
+        });
+        Button button2 = findViewById(R.id.button_cancel);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 InputBookItemActivity.this.finish();
             }
         });

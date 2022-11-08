@@ -155,6 +155,9 @@ public class BookItem {
         title=name;
         image_R_id=id;
     }
+        public void setTITLE(String TITLE) {
+        this.title = TITLE;
+    }
     public String getTitle(){
         return title;
     }
