@@ -23,7 +23,7 @@ public class InputBookItemActivity extends AppCompatActivity {
 
 
         String title;
-        int Order= -1;
+        int Order;
 //        try {
 //            Bundle bundle=getIntent().getExtras();
 //            title = bundle.getString("title");
