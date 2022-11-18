@@ -23,6 +23,12 @@ public class InputBookItemActivity extends AppCompatActivity {
 
 
         String title;
+        String author;
+        String translator;
+        String publisher;
+        String year;
+        String month;
+        String isbn;
         int Order;
 //        try {
 //            Bundle bundle=getIntent().getExtras();
@@ -33,10 +39,13 @@ public class InputBookItemActivity extends AppCompatActivity {
 //        }
         title = this.getIntent().getStringExtra("title");
         Order = this.getIntent().getIntExtra("Order",0);
-
-
-
-
+        author= this.getIntent().getStringExtra("author");
+        translator= this.getIntent().getStringExtra("translator");
+        publisher= this.getIntent().getStringExtra("publisher");
+        year= this.getIntent().getStringExtra("year");
+        month= this.getIntent().getStringExtra("month");
+        isbn= this.getIntent().getStringExtra("isbn");
+//        Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
 
 
         EditText book_title_edit_text = findViewById(R.id.book_title_edit_text);
@@ -50,10 +59,31 @@ public class InputBookItemActivity extends AppCompatActivity {
         if(null!=title)
         {
             book_title_edit_text.setText(title);
-            Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
         }
-
-
+        if(null!=author)
+        {
+            book_author_edit_text.setText(author);
+        }
+        if(null!=translator)
+        {
+            book_translator_edit_text.setText(translator);
+        }
+        if(null!=publisher)
+        {
+            book_publisher_edit_text.setText(publisher);
+        }
+        if(null!=year)
+        {
+            book_pubyear_edit_text.setText(year);
+        }
+        if(null!=month)
+        {
+            book_pubmonth_edit_text.setText(month);
+        }
+        if(null!=isbn)
+        {
+            book_isbn_edit_text.setText(isbn);
+        }
 
         Button button = findViewById(R.id.button_ok);
         int finalOrder = Order;
@@ -63,48 +93,34 @@ public class InputBookItemActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
 
-                int year,month,isbn;
-
                 String book_title_edit_text_string = book_title_edit_text.getText().toString();
                 if("".equals(book_title_edit_text_string))
                     book_title_edit_text_string = "Unnamed";
                 bundle.putString("title",book_title_edit_text_string);
 
                 String book_author_edit_text_string = book_author_edit_text.getText().toString();
-                if("".equals(book_author_edit_text_string))
-                    book_author_edit_text_string = "Unnamed";
-                bundle.putString("author",book_author_edit_text.getText().toString());
+//                if("".equals(book_author_edit_text_string))
+//                    book_author_edit_text_string = "Unnamed";
+                bundle.putString("author",book_author_edit_text_string);
 
                 String book_translator_edit_text_string = book_translator_edit_text.getText().toString();
-                if("".equals(book_translator_edit_text_string))
-                    book_translator_edit_text_string = "Unnamed";
+//                if("".equals(book_translator_edit_text_string))
+//                    book_translator_edit_text_string = "Unnamed";
                 bundle.putString("translator",book_translator_edit_text.getText().toString());
 
                 String book_publisher_edit_text_string = book_publisher_edit_text.getText().toString();
-                if("".equals(book_publisher_edit_text_string))
-                    book_publisher_edit_text_string = "Unnamed";
+//                if("".equals(book_publisher_edit_text_string))
+//                    book_publisher_edit_text_string = "Unnamed";
                 bundle.putString("publisher",book_publisher_edit_text.getText().toString());
 //
                 String book_pubyear_edit_text_string = book_pubyear_edit_text.getText().toString();
-                if( "".equals(book_pubyear_edit_text_string))
-                    year=1999;
-                else
-                    year = Integer.parseInt(book_pubyear_edit_text_string);
-                bundle.putInt("year",year);
-//
+                bundle.putString("year",book_pubyear_edit_text_string);
+
                 String book_pubmonth_edit_text_string = book_pubmonth_edit_text.getText().toString();
-                if( "".equals(book_pubmonth_edit_text_string))
-                    month=1;
-                else
-                    month = Integer.parseInt(book_pubmonth_edit_text_string);
-                bundle.putInt("month",month);
-//
+                bundle.putString("month",book_pubmonth_edit_text_string);
+
                 String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
-                if( "".equals(book_isbn_edit_text_string))
-                    isbn=1234567890;
-                else
-                    isbn = Integer.parseInt(book_isbn_edit_text_string);
-                bundle.putInt("isbn",isbn);
+                bundle.putString("isbn",book_isbn_edit_text_string);
 
                 bundle.putInt("Order", finalOrder);
 

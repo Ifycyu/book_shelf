@@ -31,6 +31,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
 import com.jnu.myapplication.data.BookShelf;
+import com.jnu.myapplication.data.DataSaver;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,15 +57,16 @@ public class BookListMainActivity extends AppCompatActivity {
                 String author = bundle.getString("author");
                 String translator = bundle.getString("translator");
                 String publisher = bundle.getString("publisher");
-                int year = bundle.getInt("year");
-                int month = bundle.getInt("month");
-                int isbn = bundle.getInt("isbn");
+                String year = bundle.getString("year");
+                String month = bundle.getString("month");
+                String isbn = bundle.getString("isbn");
 
                 int new_book_position = bookItems.size();
-                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
+//                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
+                bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name));
+                new DataSaver().save(this,bookItems);
                 mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
-
-                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
             }
         }
             });
@@ -75,8 +78,21 @@ public class BookListMainActivity extends AppCompatActivity {
                     {
                         Bundle bundle = intent.getExtras();
                         String title = bundle.getString("title");
+                        String author = bundle.getString("author");
+                        String translator = bundle.getString("translator");
+                        String publisher = bundle.getString("publisher");
+                        String year= bundle.getString("year");
+                        String month= bundle.getString("month");
+                        String isbn = bundle.getString("isbn");
                         int Order = bundle.getInt("Order");
                         bookItems.get(Order).setTITLE(title);
+                        bookItems.get(Order).setAUTHORS(author);
+                        bookItems.get(Order).setTRANSLATORS(translator);
+                        bookItems.get(Order).setPUBLISHER(publisher);
+                        bookItems.get(Order).setYear(year);
+                        bookItems.get(Order).setMonth(month);
+                        bookItems.get(Order).setISBN(isbn);
+                        new DataSaver().save(this,bookItems);
                         mainRecycleViewAdapter.notifyDataSetChanged();
                     }
                 }
@@ -113,12 +129,12 @@ public class BookListMainActivity extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewMain.setLayoutManager(linearLayoutManager);
 
-        bookItems =new ArrayList<BookItem>();
-
-
-        bookItems.add(new BookItem("信息安全数学基础（第2版）", R.drawable.book_1));
-        bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
-        bookItems.add(new BookItem("书", R.drawable.book_no_name));
+        DataSaver dataSaver = new DataSaver();
+        bookItems = dataSaver.Load(this);
+//        if(bookItems.size()==0)
+//            bookItems.add(new BookItem("信息安全数学基础（第2版）", R.drawable.book_1));
+//        bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
+//        bookItems.add(new BookItem("书", R.drawable.book_no_name));
 
 
         //设置数据接收渲染器
@@ -154,6 +170,7 @@ public class BookListMainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 bookItems.remove(item.getOrder());
+                                new DataSaver().save(BookListMainActivity.this,bookItems);
                                 mainRecycleViewAdapter.notifyItemRemoved(item.getOrder());
                             }
                         }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -168,11 +185,24 @@ public class BookListMainActivity extends AppCompatActivity {
                 intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
                 Bundle bundle = new Bundle();
 
-                String book_title_edit_text_string = bookItems.get(item.getOrder()).getTitle();
-                bundle.putString("title",book_title_edit_text_string);
+                String book_title_edit_text_title_string = bookItems.get(item.getOrder()).getTITLE();
+                String book_title_edit_text_author_string = bookItems.get(item.getOrder()).getAUTHORS();
+                String book_title_edit_text_translator_string = bookItems.get(item.getOrder()).getTRANSLATORS();
+                String book_title_edit_text_publisher_string = bookItems.get(item.getOrder()).getPUBLISHER();
+                String book_title_edit_text_year_string = bookItems.get(item.getOrder()).getYear();
+                String book_title_edit_text_month_string = bookItems.get(item.getOrder()).getMonth();
+                String book_title_edit_text_isbn_string = bookItems.get(item.getOrder()).getISBN();
+
+
+
+                bundle.putString("title",book_title_edit_text_title_string);
+                bundle.putString("author",book_title_edit_text_author_string);
+                bundle.putString("translator",book_title_edit_text_translator_string);
+                bundle.putString("publisher",book_title_edit_text_publisher_string);
+                bundle.putString("isbn",book_title_edit_text_isbn_string);
+                bundle.putString("year",book_title_edit_text_year_string);
+                bundle.putString("month",book_title_edit_text_month_string);
                 bundle.putInt("Order",item.getOrder());
-
-
                 intent.putExtras(bundle);
                 editDataLauncher.launch(intent);
                 break;
@@ -246,7 +276,7 @@ public class BookListMainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             //holder设置数据
-            holder.getTextTitle().setText(localDataset.get(position).getTitle());//设置书名
+            holder.getTextTitle().setText(localDataset.get(position).getTITLE());//设置书名
             holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
             holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
             holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
