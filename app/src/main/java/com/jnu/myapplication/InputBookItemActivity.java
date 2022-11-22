@@ -5,10 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.jnu.myapplication.data.BookJson;
+import com.jnu.myapplication.data.DataDownloader;
+
+import java.util.List;
 
 public class InputBookItemActivity extends AppCompatActivity {
 
@@ -136,5 +142,52 @@ public class InputBookItemActivity extends AppCompatActivity {
                 InputBookItemActivity.this.finish();
             }
         });
+        search_isbn();
+    }
+    public void search_isbn(){
+        EditText book_isbn_edit_text = findViewById(R.id.book_isbn_edit_text);
+
+        Button button = findViewById(R.id.button_isbn);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        DataDownloader dataDownloader = new DataDownloader();
+                        String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
+                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
+//                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn=9787115461476&appKey=ae1718d4587744b0b79f940fbef69e77");
+                        BookJson bookJson= dataDownloader.parsonJson(bookJsonData);
+                        Log.i("test Data",bookJson.getBookName());
+                        InputBookItemActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                set_edit_text(bookJson);
+                            }
+                        });
+                    }
+                }).start();
+
+            }
+        });
+
+
+    }
+    private void set_edit_text(BookJson bookJson)
+    {
+        EditText book_title_edit_text = findViewById(R.id.book_title_edit_text);
+        EditText book_author_edit_text = findViewById(R.id.book_author_edit_text);
+        EditText book_translator_edit_text = findViewById(R.id.book_translator_edit_text);
+        EditText book_publisher_edit_text = findViewById(R.id.book_publisher_edit_text);
+        EditText book_pubyear_edit_text = findViewById(R.id.book_pubyear_edit_text);
+        EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
+        book_title_edit_text.setText(bookJson.getBookName());
+        book_author_edit_text.setText(bookJson.getAuthor());
+        book_publisher_edit_text.setText(bookJson.getPress());
+        book_pubyear_edit_text.setText(bookJson.getYear());
+        book_pubmonth_edit_text.setText(bookJson.getMonth());
     }
 }

@@ -174,13 +174,18 @@
 
             <EditText
                 android:id="@id/book_isbn_edit_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:inputType="number"
                 android:hint="@string/book_isbn_edit_text_hint" />
+            <Button
+                android:id="@+id/button_isbn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="isbn获取"></Button>
         </LinearLayout>
 
         <LinearLayout

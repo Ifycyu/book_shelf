@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -30,7 +31,9 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
+import com.jnu.myapplication.data.BookJson;
 import com.jnu.myapplication.data.BookShelf;
+import com.jnu.myapplication.data.DataDownloader;
 import com.jnu.myapplication.data.DataSaver;
 
 import java.util.ArrayList;
@@ -102,11 +105,16 @@ public class BookListMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         getSupportActionBar().hide();//最上面取消
         setRecyclerView();//RecyclerView
         setFloatingActionButton();//悬浮按钮
         setDrawerLayout();//侧滑
         setBookShelfSpinner(1);
+
+
+
 
     }
     //
