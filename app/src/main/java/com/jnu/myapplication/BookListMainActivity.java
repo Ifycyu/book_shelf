@@ -1,5 +1,7 @@
 package com.jnu.myapplication;
 
+import static com.jnu.myapplication.R.drawable.*;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -53,9 +55,9 @@ public class BookListMainActivity extends AppCompatActivity {
     private MainRecycleViewAdapter SearchAdapter;
 
 
+
     private ArrayList<BookItem>search_mData = new ArrayList<BookItem>();
     private SearchView mSearchView;
-
     // 返回activity
     private ActivityResultLauncher<Intent> addDataLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
             ,result -> {
@@ -74,7 +76,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
                         int new_book_position = bookItems.size();
 //                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
-                        bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name,new_book_position));
+                        bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,new_book_position));
                         new DataSaver().save(this,bookItems);
                         mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
 //                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
@@ -253,6 +255,7 @@ public class BookListMainActivity extends AppCompatActivity {
             private final ImageView imageView;
             private final TextView publisher_text;
             private final TextView publisher_time;
+            private  final  ImageView starView;
 
 
             public TextView getPublisher_text() {
@@ -269,6 +272,8 @@ public class BookListMainActivity extends AppCompatActivity {
             public ImageView getImageView() {
                 return imageView;
             }
+            public ImageView getStarView()
+            {return  starView;}
 
             public ViewHolder(View view) {
                 super(view);
@@ -277,6 +282,9 @@ public class BookListMainActivity extends AppCompatActivity {
                 textTitle = view.findViewById(R.id.list_title_text_view);
                 publisher_text = view.findViewById(R.id.list_publisher_text_view);
                 publisher_time = view.findViewById(R.id.list_pubtime_text_view);
+                starView = view.findViewById(R.id.list_star);
+
+
                 //holder的监听事件
                 view.setOnCreateContextMenuListener(this);
             }
@@ -309,6 +317,21 @@ public class BookListMainActivity extends AppCompatActivity {
             holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
             holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
             holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
+
+            holder.getStarView().setOnClickListener(new View.OnClickListener() {  //设置点击事件
+                @Override
+                public void onClick(View v) {
+                    localDataset.get(position).setStar(!localDataset.get(position).getStar());
+                    mainRecycleViewAdapter.notifyDataSetChanged();
+
+                }
+            });
+
+            if(localDataset.get(position).getStar())
+                holder.getStarView().setImageResource(ic_baseline_star_24);
+            else
+                holder.getStarView().setImageResource(ic_baseline_star_border_24);
+
         }
 
         @Override
