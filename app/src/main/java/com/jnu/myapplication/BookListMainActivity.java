@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -45,10 +47,16 @@ public class BookListMainActivity extends AppCompatActivity {
     public static final int menu_id_add = 1;
     public static final int menu_id_delete = 2;
     public static final int menu_id_edit = 3;
+    private RecyclerView recyclerViewMain;
     private ArrayList<BookItem> bookItems;
     private MainRecycleViewAdapter mainRecycleViewAdapter;
+    private MainRecycleViewAdapter SearchAdapter;
 
-// 返回activity
+
+    private ArrayList<BookItem>search_mData = new ArrayList<BookItem>();
+    private SearchView mSearchView;
+
+    // 返回activity
     private ActivityResultLauncher<Intent> addDataLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
             ,result -> {
         if(null!=result){
@@ -66,10 +74,13 @@ public class BookListMainActivity extends AppCompatActivity {
 
                 int new_book_position = bookItems.size();
 //                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
-                bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name));
+                bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name,new_book_position));
                 new DataSaver().save(this,bookItems);
                 mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
 //                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
+                recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+                mSearchView = findViewById(R.id.search);
+                mSearchView.setQuery("",false);
             }
         }
             });
@@ -112,7 +123,7 @@ public class BookListMainActivity extends AppCompatActivity {
         setFloatingActionButton();//悬浮按钮
         setDrawerLayout();//侧滑
         setBookShelfSpinner(1);
-
+        initSearchView();
 
 
 
@@ -123,7 +134,7 @@ public class BookListMainActivity extends AppCompatActivity {
         add_book_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(BookListMainActivity.this, "Add a new book", Toast.LENGTH_LONG).show();//不能直接用this
+//                Toast.makeText(BookListMainActivity.this, "Add a new book", Toast.LENGTH_LONG).show();//不能直接用this
                 Intent intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
                 addDataLauncher.launch(intent);
             }
@@ -131,7 +142,7 @@ public class BookListMainActivity extends AppCompatActivity {
     }
 //
     private void setRecyclerView() {
-        RecyclerView recyclerViewMain=findViewById(R.id.recycle_view_books);
+        recyclerViewMain=findViewById(R.id.recycle_view_books);
         //布局
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -177,9 +188,17 @@ public class BookListMainActivity extends AppCompatActivity {
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                bookItems.remove(item.getOrder());
+                                int remove_postition=item.getOrder();
+                                    if (search_mData.size()>remove_postition)
+                                    {
+                                        search_mData.remove(item.getOrder());
+                                        remove_postition = search_mData.get(item.getOrder()).getBookId();
+                                        SearchAdapter.notifyItemRemoved(item.getOrder());
+                                    }
+                                bookItems.remove(remove_postition);
                                 new DataSaver().save(BookListMainActivity.this,bookItems);
-                                mainRecycleViewAdapter.notifyItemRemoved(item.getOrder());
+                                mainRecycleViewAdapter.notifyItemRemoved(remove_postition);
+
                             }
                         }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
@@ -224,7 +243,9 @@ public class BookListMainActivity extends AppCompatActivity {
     //adapter重写三个方法
     // 在内部类设置viewholder类
     public class MainRecycleViewAdapter extends RecyclerView.Adapter<MainRecycleViewAdapter.ViewHolder> {
+
         private ArrayList<BookItem>localDataset;
+
         //创建viewholder，针对每一个item生成一个viewholder
         //相当一个容器，里面的东西自定义
         public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -347,7 +368,7 @@ public class BookListMainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 //                updateUI(true, null);
-                Toast.makeText(BookListMainActivity.this,"input activity return",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BookListMainActivity.this,"input activity return",Toast.LENGTH_SHORT).show();
 
             }
 
@@ -359,6 +380,78 @@ public class BookListMainActivity extends AppCompatActivity {
         });
         if (selection >= 0 && selection < bookShelves.size()) {
             mSpinner.setSelection(selection);
+        }
+    }
+
+    private void initSearchView() {
+        mSearchView = findViewById(R.id.search);
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return true;
+            }
+        });
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                // 当搜索框内容变化 ， 新的搜索数据清除，并更新
+                search_mData.clear();
+                find(newText);
+                SearchAdapter = new MainRecycleViewAdapter(search_mData);
+                /// 新的adapter进行数据更新
+                recyclerViewMain.setAdapter(SearchAdapter);
+                return false;
+            }
+        });
+        mSearchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                //关闭搜索按钮的时候，设置显示默认页面
+                recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+                return false;
+            }
+        });
+    }
+    private boolean check(String a,String b)
+    {
+        int  vis[] = new int[1000];//标记位置
+        /// a 搜索框字符串 b标签字符串
+        for (int i=0;i<a.length();++i)
+        {
+            char x = a.charAt(i);
+            boolean flag = false;
+            for (int j=0;j<b.length();++j)
+            {
+                char y = b.charAt(j);
+                // 如果在标签之中该字符出现过，直接标记
+                if(vis[j]==0 && x==y)
+                {
+                    vis[j]=1;
+                    flag = true;
+                    break;
+                }
+            }
+            /// 未找到未标记的，说明不是合法的匹配
+            if (!flag) return false;
+        }
+        return true;
+    }
+    private void find(String x)
+    {
+        for (int i=0;i<bookItems.size();++i)
+        {
+            if (check(x,bookItems.get(i).getTITLE()))
+            {
+                search_mData.add(bookItems.get(i));
+                /// 找到的新的，作为更新
+            }
         }
     }
 

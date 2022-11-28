@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 public class BookItem implements Serializable{
-    public BookItem(String TITLE, String AUTHORS, String TRANSLATORS, String PUBLISHER, String year, String month, String ISBN, int image_R_id) {
+    public BookItem(String TITLE, String AUTHORS, String TRANSLATORS, String PUBLISHER, String year, String month, String ISBN, int image_R_id,int BookId) {
         this.TITLE = TITLE;
         this.AUTHORS = AUTHORS;
         this.TRANSLATORS = TRANSLATORS;
@@ -13,6 +13,7 @@ public class BookItem implements Serializable{
         this.Month = month;
         this.ISBN = ISBN;
         this.image_R_id = image_R_id;
+        this.BookId=BookId;
     }
 
     public String getTITLE() {
@@ -83,6 +84,15 @@ public class BookItem implements Serializable{
 
     String TITLE;String AUTHORS; String TRANSLATORS; String PUBLISHER; String Year;String Month;  String ISBN;int image_R_id;
 
+    public int getBookId() {
+        return BookId;
+    }
+
+    public void setBookId(int bookId) {
+        BookId = bookId;
+    }
+
+    int BookId;
 
 
 // 综合

@@ -57,4 +57,14 @@ public class BookJson {
     String month;
 String year;
 
+    public boolean isBlank() {
+        return blank;
+    }
+
+    public void setBlank(boolean blank) {
+        this.blank = blank;
+    }
+
+    boolean blank;
+
 }
