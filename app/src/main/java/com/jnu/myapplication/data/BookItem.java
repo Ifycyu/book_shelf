@@ -94,18 +94,8 @@ public class BookItem implements Serializable{
 
     int BookId;
 
-    public Boolean getStar() {
-        return Star;
-    }
 
-    public void setStar(Boolean star) {
-        Star = star;
-    }
-
-    Boolean Star=false;
-
-
-// 综合
+    // 综合
     public String getPubText(){//作者+出版社
         if (!"".equals(getAUTHORS()))
 

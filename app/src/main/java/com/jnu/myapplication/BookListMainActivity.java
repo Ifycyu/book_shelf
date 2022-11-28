@@ -1,8 +1,5 @@
 package com.jnu.myapplication;
 
-import static com.jnu.myapplication.R.drawable.ic_baseline_star_24;
-import static com.jnu.myapplication.R.drawable.ic_baseline_star_border_24;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -18,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -34,10 +33,11 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
+import com.jnu.myapplication.data.BookJson;
 import com.jnu.myapplication.data.BookShelf;
+import com.jnu.myapplication.data.DataDownloader;
 import com.jnu.myapplication.data.DataSaver;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,42 +50,39 @@ public class BookListMainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMain;
     private ArrayList<BookItem> bookItems;
     private MainRecycleViewAdapter mainRecycleViewAdapter;
-    private ArrayList<BookItem> mBooks;
+    private MainRecycleViewAdapter SearchAdapter;
+
+
     private ArrayList<BookItem>search_mData = new ArrayList<BookItem>();
-    private MainRecycleViewAdapter SearchAdapter= new MainRecycleViewAdapter(search_mData);
     private SearchView mSearchView;
 
     // 返回activity
     private ActivityResultLauncher<Intent> addDataLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
             ,result -> {
-        if(null!=result){
-            Intent intent =result.getData();
-            if(result.getResultCode()==InputBookItemActivity.RESULT_CODE_SUCCESS)
-            {
-                Bundle bundle = intent.getExtras();
-                String title = bundle.getString("title");
-                String author = bundle.getString("author");
-                String translator = bundle.getString("translator");
-                String publisher = bundle.getString("publisher");
-                String year = bundle.getString("year");
-                String month = bundle.getString("month");
-                String isbn = bundle.getString("isbn");
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                int new_book_position = bookItems.size();
-//                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
-                bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name,(int)timestamp.getTime()));
-                new DataSaver().save(this,bookItems);
+                if(null!=result){
+                    Intent intent =result.getData();
+                    if(result.getResultCode()==InputBookItemActivity.RESULT_CODE_SUCCESS)
+                    {
+                        Bundle bundle = intent.getExtras();
+                        String title = bundle.getString("title");
+                        String author = bundle.getString("author");
+                        String translator = bundle.getString("translator");
+                        String publisher = bundle.getString("publisher");
+                        String year = bundle.getString("year");
+                        String month = bundle.getString("month");
+                        String isbn = bundle.getString("isbn");
 
-                int mbook_position = mBooks.size();
-                mBooks.add(mbook_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name,mbook_position));
-                updateUI(false,null);
-//                mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
+                        int new_book_position = bookItems.size();
+//                bookItems.add(new_book_position,new BookItem(title, R.drawable.book_no_name));
+                        bookItems.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn,R.drawable.book_no_name,new_book_position));
+                        new DataSaver().save(this,bookItems);
+                        mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
 //                Toast.makeText(this,"input activity return",Toast.LENGTH_SHORT).show();
-//                recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-//                mSearchView = findViewById(R.id.search);
-//                mSearchView.setQuery("",false);
-            }
-        }
+                        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+                        mSearchView = findViewById(R.id.search);
+                        mSearchView.setQuery("",false);
+                    }
+                }
             });
     private ActivityResultLauncher<Intent> editDataLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult()
             ,result -> {
@@ -102,39 +99,15 @@ public class BookListMainActivity extends AppCompatActivity {
                         String month= bundle.getString("month");
                         String isbn = bundle.getString("isbn");
                         int Order = bundle.getInt("Order");
-                        int book_id = mBooks.get(Order).getBookId();
-                        int book_id_position=0;
-
-                        for(int i =0;i<bookItems.size();i++)
-                        {
-                            if(bookItems.get(i).getBookId() == book_id)
-                                book_id_position=i;
-                        }
-
-                        bookItems.get(book_id_position).setTITLE(title);
-                        bookItems.get(book_id_position).setAUTHORS(author);
-                        bookItems.get(book_id_position).setTRANSLATORS(translator);
-                        bookItems.get(book_id_position).setPUBLISHER(publisher);
-                        bookItems.get(book_id_position).setYear(year);
-                        bookItems.get(book_id_position).setMonth(month);
-                        bookItems.get(book_id_position).setISBN(isbn);
-                        new DataSaver().save(this,bookItems);
-
-
-                        mBooks.get(Order).setTITLE(title);
-                        mBooks.get(Order).setAUTHORS(author);
+                        bookItems.get(Order).setTITLE(title);
+                        bookItems.get(Order).setAUTHORS(author);
                         bookItems.get(Order).setTRANSLATORS(translator);
-                        mBooks.get(Order).setPUBLISHER(publisher);
-                        mBooks.get(Order).setYear(year);
-                        mBooks.get(Order).setMonth(month);
-                        mBooks.get(Order).setISBN(isbn);
-                        updateUI(false,null);
-
-
-//                        mainRecycleViewAdapter.notifyDataSetChanged();
-//                        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-//                        mSearchView = findViewById(R.id.search);
-//                        mSearchView.setQuery("",false);
+                        bookItems.get(Order).setPUBLISHER(publisher);
+                        bookItems.get(Order).setYear(year);
+                        bookItems.get(Order).setMonth(month);
+                        bookItems.get(Order).setISBN(isbn);
+                        new DataSaver().save(this,bookItems);
+                        mainRecycleViewAdapter.notifyDataSetChanged();
                     }
                 }
             });
@@ -167,7 +140,7 @@ public class BookListMainActivity extends AppCompatActivity {
             }
         });
     }
-//
+    //
     private void setRecyclerView() {
         recyclerViewMain=findViewById(R.id.recycle_view_books);
         //布局
@@ -177,10 +150,6 @@ public class BookListMainActivity extends AppCompatActivity {
 
         DataSaver dataSaver = new DataSaver();
         bookItems = dataSaver.Load(this);
-        mBooks = dataSaver.Load(this);
-
-//        bookItems = new ArrayList<>();
-//        new DataSaver().save(BookListMainActivity.this,bookItems);
 //        if(bookItems.size()==0)
 //            bookItems.add(new BookItem("信息安全数学基础（第2版）", R.drawable.book_1));
 //        bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
@@ -188,17 +157,14 @@ public class BookListMainActivity extends AppCompatActivity {
 
 
         //设置数据接收渲染器
-//        mainRecycleViewAdapter= new MainRecycleViewAdapter(bookItems);
-//        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-
-        updateUI(false,null);
-
+        mainRecycleViewAdapter= new MainRecycleViewAdapter(bookItems);
+        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
     }
     //
     public ArrayList<BookItem> getListBooks(){
         return bookItems;
     }
-//
+    //
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         //菜单menu的选项执行事件
@@ -223,16 +189,16 @@ public class BookListMainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 int remove_postition=item.getOrder();
-
-                                int book_id = mBooks.get(item.getOrder()).getBookId();
-                                for (int j=0;j<bookItems.size();j++) {
-                                    if (bookItems.get(j).getBookId() == book_id)
-                                        bookItems.remove(j);
+                                if (search_mData.size()>remove_postition)
+                                {
+                                    search_mData.remove(item.getOrder());
+                                    remove_postition = search_mData.get(item.getOrder()).getBookId();
+                                    SearchAdapter.notifyItemRemoved(item.getOrder());
                                 }
-                                mBooks.remove(remove_postition);
+                                bookItems.remove(remove_postition);
                                 new DataSaver().save(BookListMainActivity.this,bookItems);
-//                                mainRecycleViewAdapter.notifyItemRemoved(remove_postition);
-                                updateUI(false,null);
+                                mainRecycleViewAdapter.notifyItemRemoved(remove_postition);
+
                             }
                         }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
@@ -246,14 +212,13 @@ public class BookListMainActivity extends AppCompatActivity {
                 intent = new Intent(BookListMainActivity.this, InputBookItemActivity.class);
                 Bundle bundle = new Bundle();
 
-                int position = item.getOrder();
-                String book_title_edit_text_title_string = mBooks.get(position).getTITLE();
-                String book_title_edit_text_author_string = mBooks.get(position).getAUTHORS();
-                String book_title_edit_text_translator_string = mBooks.get(position).getTRANSLATORS();
-                String book_title_edit_text_publisher_string = mBooks.get(position).getPUBLISHER();
-                String book_title_edit_text_year_string = mBooks.get(position).getYear();
-                String book_title_edit_text_month_string = mBooks.get(position).getMonth();
-                String book_title_edit_text_isbn_string = mBooks.get(position).getISBN();
+                String book_title_edit_text_title_string = bookItems.get(item.getOrder()).getTITLE();
+                String book_title_edit_text_author_string = bookItems.get(item.getOrder()).getAUTHORS();
+                String book_title_edit_text_translator_string = bookItems.get(item.getOrder()).getTRANSLATORS();
+                String book_title_edit_text_publisher_string = bookItems.get(item.getOrder()).getPUBLISHER();
+                String book_title_edit_text_year_string = bookItems.get(item.getOrder()).getYear();
+                String book_title_edit_text_month_string = bookItems.get(item.getOrder()).getMonth();
+                String book_title_edit_text_isbn_string = bookItems.get(item.getOrder()).getISBN();
 
 
 
@@ -288,7 +253,6 @@ public class BookListMainActivity extends AppCompatActivity {
             private final ImageView imageView;
             private final TextView publisher_text;
             private final TextView publisher_time;
-            private final ImageView star_book_view;
 
 
             public TextView getPublisher_text() {
@@ -305,9 +269,7 @@ public class BookListMainActivity extends AppCompatActivity {
             public ImageView getImageView() {
                 return imageView;
             }
-            public ImageView getstarView() {
-                return star_book_view;
-            }
+
             public ViewHolder(View view) {
                 super(view);
                 //找到view
@@ -315,7 +277,6 @@ public class BookListMainActivity extends AppCompatActivity {
                 textTitle = view.findViewById(R.id.list_title_text_view);
                 publisher_text = view.findViewById(R.id.list_publisher_text_view);
                 publisher_time = view.findViewById(R.id.list_pubtime_text_view);
-                star_book_view = view.findViewById(R.id.list_star);
                 //holder的监听事件
                 view.setOnCreateContextMenuListener(this);
             }
@@ -348,33 +309,12 @@ public class BookListMainActivity extends AppCompatActivity {
             holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
             holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
             holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
-            holder.getstarView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    localDataset.get(position).setStar(!localDataset.get(position).getStar());
-                    mainRecycleViewAdapter.notifyDataSetChanged();
-                    SearchAdapter.notifyDataSetChanged();
-                    new DataSaver().save(BookListMainActivity.this,bookItems);
-                }
-            });
-//            holder.getstarView().setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    localDataset.get(position).setStar(!localDataset.get(position).getStar());
-//                }
-//            });
-            if(localDataset.get(position).getStar())
-                holder.getstarView().setImageResource(ic_baseline_star_24);
-            else
-                holder.getstarView().setImageResource(ic_baseline_star_border_24);
         }
 
         @Override
         public int getItemCount() {
             return localDataset.size();
         }
-
-
     }
 
     private void setDrawerLayout() {
@@ -432,6 +372,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
             }
 
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -453,31 +394,19 @@ public class BookListMainActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
-            public boolean onQueryTextSubmit(String query)
-            {
-//                updateUI(true,query);
-                // 当搜索框内容变化 ， 新的搜索数据清除，并更新
-//                search_mData.clear();
-//                findBooks(query);
-//
-//                /// 新的adapter进行数据更新
-//                recyclerViewMain.setAdapter(SearchAdapter);
+            public boolean onQueryTextSubmit(String query) {
                 return false;
-//                return false;
             }
 
-//            @Override
+            @Override
             public boolean onQueryTextChange(String newText) {
 
-//                // 当搜索框内容变化 ， 新的搜索数据清除，并更新
-//                search_mData.clear();
-//                find(newText);
-//
-//                /// 新的adapter进行数据更新
-//                recyclerViewMain.setAdapter(SearchAdapter);
-                updateUI(true,newText);
-
-
+                // 当搜索框内容变化 ， 新的搜索数据清除，并更新
+                search_mData.clear();
+                find(newText);
+                SearchAdapter = new MainRecycleViewAdapter(search_mData);
+                /// 新的adapter进行数据更新
+                recyclerViewMain.setAdapter(SearchAdapter);
                 return false;
             }
         });
@@ -514,34 +443,15 @@ public class BookListMainActivity extends AppCompatActivity {
         }
         return true;
     }
-    private ArrayList<BookItem> findBooks(String x)
+    private void find(String x)
     {
-        ArrayList<BookItem> mBooks1 = new ArrayList<>();
         for (int i=0;i<bookItems.size();++i)
         {
             if (check(x,bookItems.get(i).getTITLE()))
             {
-                mBooks1.add(bookItems.get(i));
+                search_mData.add(bookItems.get(i));
                 /// 找到的新的，作为更新
             }
-        }
-
-        return  mBooks1;
-    }
-
-    private void updateUI(boolean updateBooksList, @Nullable String keyword) {
-        if (updateBooksList) {
-//            setBooksAndUI(keyword);
-            mBooks=findBooks(keyword);
-        }
-        if (mainRecycleViewAdapter == null) {
-            mainRecycleViewAdapter = new MainRecycleViewAdapter(mBooks);
-            recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-
-        } else {
-            mainRecycleViewAdapter = new MainRecycleViewAdapter(mBooks);
-            recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-            mainRecycleViewAdapter.notifyDataSetChanged();
         }
     }
 
