@@ -158,16 +158,27 @@ public class InputBookItemActivity extends AppCompatActivity {
 
                         DataDownloader dataDownloader = new DataDownloader();
                         String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
-                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
+                        if (book_isbn_edit_text_string.length()==13 || book_isbn_edit_text_string.length()==10)
+                        {
+                            String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
 //                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn=9787115461476&appKey=ae1718d4587744b0b79f940fbef69e77");
-                        BookJson bookJson= dataDownloader.parsonJson(bookJsonData);
-                        Log.i("test Data",bookJson.getBookName());
-                        InputBookItemActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                set_edit_text(bookJson);
-                            }
-                        });
+                            BookJson bookJson= dataDownloader.parsonJson(bookJsonData);
+                            InputBookItemActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    set_edit_text(bookJson);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            InputBookItemActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(InputBookItemActivity.this, "ISBN为10或13位", Toast.LENGTH_SHORT).show();//不能直接用this
+                                }
+                            });
+                        }
                     }
                 }).start();
 
@@ -178,16 +189,23 @@ public class InputBookItemActivity extends AppCompatActivity {
     }
     private void set_edit_text(BookJson bookJson)
     {
-        EditText book_title_edit_text = findViewById(R.id.book_title_edit_text);
-        EditText book_author_edit_text = findViewById(R.id.book_author_edit_text);
-        EditText book_translator_edit_text = findViewById(R.id.book_translator_edit_text);
-        EditText book_publisher_edit_text = findViewById(R.id.book_publisher_edit_text);
-        EditText book_pubyear_edit_text = findViewById(R.id.book_pubyear_edit_text);
-        EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
-        book_title_edit_text.setText(bookJson.getBookName());
-        book_author_edit_text.setText(bookJson.getAuthor());
-        book_publisher_edit_text.setText(bookJson.getPress());
-        book_pubyear_edit_text.setText(bookJson.getYear());
-        book_pubmonth_edit_text.setText(bookJson.getMonth());
+        if (bookJson.isBlank())
+        {
+            Toast.makeText(InputBookItemActivity.this, "ISBN Error", Toast.LENGTH_LONG).show();//不能直接用this
+        }else
+        {
+            EditText book_title_edit_text = findViewById(R.id.book_title_edit_text);
+            EditText book_author_edit_text = findViewById(R.id.book_author_edit_text);
+            EditText book_translator_edit_text = findViewById(R.id.book_translator_edit_text);
+            EditText book_publisher_edit_text = findViewById(R.id.book_publisher_edit_text);
+            EditText book_pubyear_edit_text = findViewById(R.id.book_pubyear_edit_text);
+            EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
+            book_title_edit_text.setText(bookJson.getBookName());
+            book_author_edit_text.setText(bookJson.getAuthor());
+            book_publisher_edit_text.setText(bookJson.getPress());
+            book_pubyear_edit_text.setText(bookJson.getYear());
+            book_pubmonth_edit_text.setText(bookJson.getMonth());
+        }
+
     }
 }

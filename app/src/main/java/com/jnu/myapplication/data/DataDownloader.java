@@ -1,8 +1,11 @@
 package com.jnu.myapplication.data;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+
+import com.jnu.myapplication.BookListMainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,10 +67,13 @@ public class DataDownloader {
             bookJson.setYear(shop.getJSONArray("pressDate").get(0).toString());
             bookJson.setMonth(shop.getJSONArray("pressDate").get(1).toString());
 
-
+            bookJson.setBlank(false);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+//            Toast.makeText(DataDownloader.this, "ISBN Error", Toast.LENGTH_LONG).show();
+//            Toast.makeText( "set your gesture firstly",).show();
+            bookJson.setBlank(true);
         }
         return  bookJson;
     }
