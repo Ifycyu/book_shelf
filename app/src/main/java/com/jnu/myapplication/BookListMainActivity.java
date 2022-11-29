@@ -136,7 +136,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
 
 
-        getSupportActionBar().hide();//最上面取消
+//        getSupportActionBar().hide();//最上面取消
         setRecyclerView();//RecyclerView
         setFloatingActionButton();//悬浮按钮
         setDrawerLayout();//侧滑
