@@ -104,6 +104,16 @@ public class BookItem implements Serializable{
 
     Boolean isStar=false;
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    String url="";
+
 
     // 综合
     public String getPubText(){//作者+出版社

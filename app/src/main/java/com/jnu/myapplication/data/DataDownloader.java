@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DataDownloader {
@@ -66,6 +67,13 @@ public class DataDownloader {
             bookJson.setIsbn(shop.getString("isbn"));
             bookJson.setYear(shop.getJSONArray("pressDate").get(0).toString());
             bookJson.setMonth(shop.getJSONArray("pressDate").get(1).toString());
+
+            String strs = shop.getString("pictures");
+            strs = strs.replaceAll("\\\"", "");
+            List<String> PicList = Arrays.asList(strs.replaceAll("[\\[\\]]", "").split(","));
+
+            bookJson.setPic(PicList.get(0));
+//            Toast.makeText(DataDownloader.this, shop.getString("pictures"), Toast.LENGTH_LONG).show();
 
             bookJson.setBlank(false);
 

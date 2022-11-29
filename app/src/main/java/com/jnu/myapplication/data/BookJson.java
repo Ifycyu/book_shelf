@@ -38,6 +38,16 @@ public class BookJson {
     String author;
     String press;
 
+    public String getPic() {
+        return Pic;
+    }
+
+    public void setPic(String pic) {
+        Pic = pic;
+    }
+
+    String Pic;
+
     public String getMonth() {
         return month;
     }
@@ -55,7 +65,7 @@ public class BookJson {
     }
 
     String month;
-String year;
+    String year;
 
     public boolean isBlank() {
         return blank;

@@ -14,15 +14,17 @@
         <entry key="..\:/Android/library/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Android/library/app/src/main/res/layout/about.xml" value="0.17" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_about.xml" value="0.33" />
-        <entry key="..\:/Android/library/app/src/main/res/layout/activity_input_book_item.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/activity_input_book_item.xml" value="0.1" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_setting.xml" value="0.25677083333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/book_cover_input.xml" value="0.359375" />
         <entry key="..\:/Android/library/app/src/main/res/layout/book_items_activity.xml" value="0.15120967741935484" />
         <entry key="..\:/Android/library/app/src/main/res/layout/content_about.xml" value="0.25677083333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/drawer.xml" value="0.2421875" />
         <entry key="..\:/Android/library/app/src/main/res/layout/item_booklist.xml" value="0.33" />
         <entry key="..\:/Android/library/app/src/main/res/layout/item_main.xml" value="0.37395833333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/layout.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/layout_drawer_header.xml" value="0.2563405797101449" />
         <entry key="..\:/Android/library/app/src/main/res/layout/layout_menu.xml" value="0.25677083333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/main_toolbar.xml" value="0.37395833333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/memu.xml" value="0.37395833333333334" />
@@ -30,7 +32,10 @@
         <entry key="..\:/Android/library/app/src/main/res/layout/spinner_drop_down_white.xml" value="0.359375" />
         <entry key="..\:/Android/library/app/src/main/res/layout/spinner_item_white.xml" value="0.37395833333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/test.xml" value="0.2421875" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/toolbar_input.xml" value="0.3729166666666667" />
         <entry key="..\:/Android/library/app/src/main/res/layout/toolbar_main.xml" value="0.25" />
+        <entry key="..\:/Android/library/app/src/main/res/menu/input_menu.xml" value="0.3729166666666667" />
+        <entry key="..\:/Android/library/app/src/main/res/menu/main_menu.xml" value="0.3729166666666667" />
         <entry key="..\:/Android/library/app/src/main/res/menu/nav_menu.xml" value="0.22" />
         <entry key="..\:/Android/library/app/src/main/res/xml/network_security_config.xml" value="0.1" />
         <entry key="..\:/Android/library/app/src/main/res/xml/root_preferences.xml" value="0.18659420289855072" />

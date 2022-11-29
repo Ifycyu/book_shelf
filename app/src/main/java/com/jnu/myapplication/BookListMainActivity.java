@@ -14,9 +14,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -32,6 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
@@ -40,6 +47,8 @@ import com.jnu.myapplication.data.BookShelf;
 import com.jnu.myapplication.data.DataDownloader;
 import com.jnu.myapplication.data.DataSaver;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,13 +85,16 @@ public class BookListMainActivity extends AppCompatActivity {
                         String year = bundle.getString("year");
                         String month = bundle.getString("month");
                         String isbn = bundle.getString("isbn");
+                        String cover = bundle.getString("cover");
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                        bookItems.add(bookItems.size(),new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,(int)timestamp.getTime()));
+                        BookItem book = new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,(int)timestamp.getTime());
+                        book.setUrl(cover);
+                        bookItems.add(bookItems.size(),book);
                         new DataSaver().save(this,bookItems);
 
 
                         int new_book_position = mBooks.size();
-                        mBooks.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,(int)timestamp.getTime()));
+                        mBooks.add(new_book_position,book);
                         mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
 //                        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
                         mSearchView = findViewById(R.id.search);
@@ -107,6 +119,7 @@ public class BookListMainActivity extends AppCompatActivity {
                         String year= bundle.getString("year");
                         String month= bundle.getString("month");
                         String isbn = bundle.getString("isbn");
+                        String cover = bundle.getString("cover");
                         int Order = bundle.getInt("Order");
                         mBooks.get(Order).setTITLE(title);
                         mBooks.get(Order).setAUTHORS(author);
@@ -115,6 +128,7 @@ public class BookListMainActivity extends AppCompatActivity {
                         mBooks.get(Order).setYear(year);
                         mBooks.get(Order).setMonth(month);
                         mBooks.get(Order).setISBN(isbn);
+                        mBooks.get(Order).setUrl(cover);
 
                         int data_book_order = get_book_order(mBooks.get(Order).getBookId());
                         bookItems.get(data_book_order).setTITLE(title);
@@ -124,6 +138,7 @@ public class BookListMainActivity extends AppCompatActivity {
                         bookItems.get(data_book_order).setYear(year);
                         bookItems.get(data_book_order).setMonth(month);
                         bookItems.get(data_book_order).setISBN(isbn);
+                        bookItems.get(data_book_order).setUrl(cover);
                         new DataSaver().save(this,bookItems);
                         updateUI(false,null);
                     }
@@ -136,7 +151,7 @@ public class BookListMainActivity extends AppCompatActivity {
 
 
 
-        getSupportActionBar().hide();//最上面取消
+//        getSupportActionBar().hide();//最上面取消
         setRecyclerView();//RecyclerView
         setFloatingActionButton();//悬浮按钮
         setDrawerLayout();//侧滑
@@ -235,6 +250,7 @@ public class BookListMainActivity extends AppCompatActivity {
                 String book_title_edit_text_year_string = mBooks.get(item.getOrder()).getYear();
                 String book_title_edit_text_month_string = mBooks.get(item.getOrder()).getMonth();
                 String book_title_edit_text_isbn_string = mBooks.get(item.getOrder()).getISBN();
+                String book_title_edit_text_url_string = mBooks.get(item.getOrder()).getUrl();
 
 
 
@@ -245,6 +261,7 @@ public class BookListMainActivity extends AppCompatActivity {
                 bundle.putString("isbn",book_title_edit_text_isbn_string);
                 bundle.putString("year",book_title_edit_text_year_string);
                 bundle.putString("month",book_title_edit_text_month_string);
+                bundle.putString("cover",book_title_edit_text_url_string);
                 bundle.putInt("Order",item.getOrder());
                 intent.putExtras(bundle);
                 editDataLauncher.launch(intent);
@@ -325,12 +342,19 @@ public class BookListMainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
             //holder设置数据
             holder.getTextTitle().setText(localDataset.get(position).getTITLE());//设置书名
             holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
             holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
             holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
+
+//            Bitmap imgBitmap =requestWebPhotoBitmap("http://121.196.15.163:81/group1/M00/2C/5D/rBDTaWKpnAOAIbjhAADAZZ_23g8877.jpg");
+//            holder.getImageView().setImageBitmap(imgBitmap);
+            if (!"".equals(localDataset.get(position).getUrl()))
+                Glide.with(BookListMainActivity.this)
+                        .load(localDataset.get(position).getUrl())
+                        .into(holder.getImageView());
 
             holder.getStarView().setOnClickListener(new View.OnClickListener() {  //设置点击事件
                 @Override
@@ -593,4 +617,23 @@ public class BookListMainActivity extends AppCompatActivity {
             find(keyword);
         }
     }
+
+
+    private Bitmap requestWebPhotoBitmap(String imgUrl) {
+        final Bitmap[] imgBitmap = new Bitmap[1];
+        Toast.makeText(BookListMainActivity.this, "获取图片中，请稍等", Toast.LENGTH_SHORT).show();
+        Glide.with(BookListMainActivity.this).asBitmap().load(imgUrl).into(new CustomTarget<Bitmap>() {
+            @SuppressLint("ClickableViewAccessibility")
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                imgBitmap[0] = resource;
+            }
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+        });
+        return imgBitmap[0];
+    }
+
 }
