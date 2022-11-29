@@ -55,8 +55,10 @@ public class BookListMainActivity extends AppCompatActivity {
     private ArrayList<BookItem> mBooks;
     private MainRecycleViewAdapter mainRecycleViewAdapter;
     private MainRecycleViewAdapter SearchAdapter;
+    private int star_cnt=0;
 
-
+    BookShelf allBookShelf = new BookShelf();
+    BookShelf starBookShelf = new BookShelf();
 
     private SearchView mSearchView;
     // 返回activity
@@ -83,8 +85,11 @@ public class BookListMainActivity extends AppCompatActivity {
                         mBooks.add(new_book_position,new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,(int)timestamp.getTime()));
                         mainRecycleViewAdapter.notifyItemInserted(new_book_position);//把新书放在最后
 //                        recyclerViewMain.setAdapter(mainRecycleViewAdapter);
-//                        mSearchView = findViewById(R.id.search);
-//                        mSearchView.setQuery("",false);
+                        mSearchView = findViewById(R.id.search);
+                        mSearchView.setQuery("",false);
+                        if(mSearchView != null && !mSearchView.isIconified()){
+                            mSearchView.setIconified(true);
+                        }
                     }
                 }
             });
@@ -135,7 +140,7 @@ public class BookListMainActivity extends AppCompatActivity {
         setRecyclerView();//RecyclerView
         setFloatingActionButton();//悬浮按钮
         setDrawerLayout();//侧滑
-        setBookShelfSpinner(1);
+        setBookShelfSpinner(0);
         initSearchView();
 
 
@@ -331,15 +336,20 @@ public class BookListMainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     localDataset.get(position).setStar(!localDataset.get(position).getStar());
+                    updateUI(false,null);
+                    new DataSaver().save(BookListMainActivity.this,bookItems);
                     mainRecycleViewAdapter.notifyDataSetChanged();
-
                 }
             });
 
             if(localDataset.get(position).getStar())
+            {
                 holder.getStarView().setImageResource(ic_baseline_star_24);
+            }
             else
+            {
                 holder.getStarView().setImageResource(ic_baseline_star_border_24);
+            }
 
         }
 
@@ -388,10 +398,29 @@ public class BookListMainActivity extends AppCompatActivity {
             // for example, if searchView is expanded, mSpinner is null
             return;
         }
-        BookShelf allBookShelf = new BookShelf();
+
+
         allBookShelf.setTitle("ALL");
+        allBookShelf.setCnt(bookItems.size());
+
+        //
+
+        starBookShelf.setTitle("STAR");
+        star_cnt=0;
+        for (int i=0;i<bookItems.size();++i)
+        {
+            if (bookItems.get(i).getStar())
+            {
+                star_cnt++;
+                /// 找到的新的，作为更新
+            }
+        }
+        starBookShelf.setCnt(star_cnt);
+        //
         List<BookShelf> bookShelves =new ArrayList<BookShelf>();
-        bookShelves.add(0, allBookShelf);
+        bookShelves.add(allBookShelf);
+        bookShelves.add(starBookShelf);
+
         ArrayAdapter<BookShelf> arrayAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_item_white, bookShelves);
         arrayAdapter.setDropDownViewResource(R.layout.spinner_drop_down_white);
@@ -399,9 +428,8 @@ public class BookListMainActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                updateUI(true, null);
-//                Toast.makeText(BookListMainActivity.this,"input activity return",Toast.LENGTH_SHORT).show();
 
+                updateUI(true, null);
             }
 
 
@@ -439,7 +467,9 @@ public class BookListMainActivity extends AppCompatActivity {
 //                SearchAdapter = new MainRecycleViewAdapter(search_mData);
 //                /// 新的adapter进行数据更新
 //                recyclerViewMain.setAdapter(SearchAdapter);
+
                 updateUI(true,newText);
+
                 return false;
             }
         });
@@ -447,7 +477,11 @@ public class BookListMainActivity extends AppCompatActivity {
             @Override
             public boolean onClose() {
                 //关闭搜索按钮的时候，设置显示默认页面
-                recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+//                recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+                if(mSearchView != null && (mSearchView.isIconified()))
+                {
+                    mSearchView.setIconified(true);
+                }
                 return false;
             }
         });
@@ -476,27 +510,50 @@ public class BookListMainActivity extends AppCompatActivity {
         }
         return true;
     }
-    private ArrayList<BookItem> find(String x)
+    private void find(String x)
     {
-        ArrayList<BookItem> mBooks1 = new ArrayList<BookItem>();
-        for (int i=0;i<bookItems.size();++i)
+        ArrayList<BookItem> t_book = new ArrayList<BookItem>();
+        for (int i=0;i<mBooks.size();++i)
         {
-            if (check(x,bookItems.get(i).getTITLE()))
+            t_book.add(mBooks.get(i));
+                /// 找到的新的，作为更新
+        }
+        mBooks.clear();
+        for (int i=0;i<t_book.size();++i)
+        {
+            if (check(x,t_book.get(i).getTITLE()))
             {
-                mBooks1.add(bookItems.get(i));
+                mBooks.add(t_book.get(i));
                 /// 找到的新的，作为更新
             }
         }
-        return  mBooks1;
     }
     private void updateUI(boolean updateBooksList, @Nullable String keyword) {
         if (updateBooksList) {
-            mBooks= find(keyword);
-
-        }
+            setBooksAndUI(keyword);
             mainRecycleViewAdapter = new MainRecycleViewAdapter(mBooks);
             recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+
+        }
+        if (mainRecycleViewAdapter == null) {
+            mainRecycleViewAdapter = new MainRecycleViewAdapter(mBooks);
+            recyclerViewMain.setAdapter(mainRecycleViewAdapter);
+        } else {
             mainRecycleViewAdapter.notifyDataSetChanged();
+
+        }
+        star_cnt=0;
+        allBookShelf.setCnt(bookItems.size());
+        for (int i=0;i<bookItems.size();++i)
+        {
+            if (bookItems.get(i).getStar())
+            {
+                star_cnt++;
+                /// 找到的新的，作为更新
+            }
+        }
+        starBookShelf.setCnt(star_cnt);
+
     }
 
     private int get_book_order(int book_id)
@@ -505,5 +562,35 @@ public class BookListMainActivity extends AppCompatActivity {
             if(book_id == bookItems.get(i).getBookId())
                 return  i;
             return -1;
+    }
+
+    private void setBooksAndUI(@Nullable String keyword) {
+        if (mSpinner != null) {
+            BookShelf selectedBookShelf = (BookShelf) mSpinner.getSelectedItem();
+            if (selectedBookShelf.getTitle().equals("ALL")) {
+                mBooks.clear();
+                for (int i=0;i<bookItems.size();++i)
+                {
+                    mBooks.add(bookItems.get(i));
+                        /// 找到的新的，作为更新
+                }
+                // select "All"
+            } else if (selectedBookShelf.getTitle().equals("STAR")){
+                // select one Bookshelf
+                mBooks.clear();
+                for (int i=0;i<bookItems.size();++i)
+                {
+                    if (bookItems.get(i).getStar())
+                    {
+                        mBooks.add(bookItems.get(i));
+                        /// 找到的新的，作为更新
+                    }
+                }
+            }
+        }
+        if(mSearchView != null && (!mSearchView.isIconified()) && keyword!=null)
+        {
+            find(keyword);
+        }
     }
 }
