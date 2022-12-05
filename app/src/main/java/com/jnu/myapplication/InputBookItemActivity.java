@@ -365,12 +365,6 @@ public class InputBookItemActivity extends AppCompatActivity {
         public void onClick(DialogInterface dialog, int which)
         {
             txt = (EditText)login.findViewById(R.id.imageCover);
-//            //取出输入编辑框的值与密码“admin”比较
-//            if((txt.getText().toString()).equals("admin"))
-//                Toast.makeText(getApplicationContext(),
-//                        "登录成功", Toast.LENGTH_SHORT).show();
-//            else
-//            http://121.196.15.163:81/group1/M00/2C/5D/rBDTaWKpnAOAIbjhAADAZZ_23g8877.jpg
 
             ImageView BookCover = findViewById(R.id.book_cover_image_view);
             cover_url = txt.getText().toString();

@@ -396,11 +396,11 @@ public class BookListMainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.nav_setting:
                         startActivity(new Intent(BookListMainActivity.this, SettingActivity.class));
-                        Toast.makeText(BookListMainActivity.this,"setting activity ",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(BookListMainActivity.this,"setting activity ",Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.nav_about:
                         startActivity(new Intent(BookListMainActivity.this, AboutActivity.class));
-                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
                         break;
                 }
                 mDrawerLayout.closeDrawers();

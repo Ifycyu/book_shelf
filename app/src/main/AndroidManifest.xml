@@ -8,6 +8,8 @@
     <!-- 获取网络状态，根据网络状态切换进行数据请求网络转换 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,6 +21,7 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         >
         <activity
             android:name=".AboutActivity"
