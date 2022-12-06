@@ -32,8 +32,8 @@
     <include
         android:id="@+id/layout_drawer"
         layout="@layout/drawer"
-
         tools:visibility="gone"
+
         />
 
 

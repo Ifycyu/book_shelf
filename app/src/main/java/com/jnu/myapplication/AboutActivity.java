@@ -21,7 +21,7 @@ public class AboutActivity extends AppCompatActivity {
 
         View aboutPage = new AboutPage(this)
                 .isRTL(false)
-                .setImage(R.drawable.book_no_name)//图片
+                .setImage(R.drawable.jnu)//图片
                 .setDescription("cyy的书架")//介绍
                 .addItem(new Element().setTitle("Version 1.0"))
                 .addEmail("872048129@qq.com","我的邮箱")//邮箱

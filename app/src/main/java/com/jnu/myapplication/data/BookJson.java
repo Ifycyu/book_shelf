@@ -38,6 +38,16 @@ public class BookJson {
     String author;
     String press;
 
+    public String getTranslator() {
+        return translator;
+    }
+
+    public void setTranslator(String translator) {
+        this.translator = translator;
+    }
+
+    String translator;
+
     public String getPic() {
         return Pic;
     }

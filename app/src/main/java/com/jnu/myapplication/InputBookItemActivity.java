@@ -116,8 +116,10 @@ public class InputBookItemActivity extends AppCompatActivity {
                         String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
                         if (book_isbn_edit_text_string.length()==13 || book_isbn_edit_text_string.length()==10)
                         {
-                            String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
-//                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn=9787115461476&appKey=ae1718d4587744b0b79f940fbef69e77");
+//                            String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
+                            String bookJsonData = dataDownloader.download("https://api.jike.xyz/situ/book/isbn/"+book_isbn_edit_text_string+"?apikey=14444.ac1e36a851666c2ae887aaaed19ad753.8330a20bc4cb468ea6cfee6a31d3248e");
+
+                            //                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn=9787115461476&appKey=ae1718d4587744b0b79f940fbef69e77");
                             BookJson bookJson= dataDownloader.parsonJson(bookJsonData);
                             InputBookItemActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -164,6 +166,7 @@ public class InputBookItemActivity extends AppCompatActivity {
             book_publisher_edit_text.setText(bookJson.getPress());
             book_pubyear_edit_text.setText(bookJson.getYear());
             book_pubmonth_edit_text.setText(bookJson.getMonth());
+            book_translator_edit_text.setText(bookJson.getTranslator());
 
 //            Bitmap image = requestWebPhotoBitmap(bookJson.getPic());
 //            BookCover.setImageBitmap(image);

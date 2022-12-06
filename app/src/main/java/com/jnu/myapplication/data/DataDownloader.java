@@ -61,20 +61,32 @@ public class DataDownloader {
 
             JSONObject shop = root.getJSONObject("data");
 
-            bookJson.setBookName(shop.getString("bookName"));
-            bookJson.setAuthor(shop.getString("author"));
-            bookJson.setPress(shop.getString("press"));
-            bookJson.setIsbn(shop.getString("isbn"));
-            bookJson.setYear(shop.getJSONArray("pressDate").get(0).toString());
-            bookJson.setMonth(shop.getJSONArray("pressDate").get(1).toString());
+//            bookJson.setBookName(shop.getString("bookName"));
+//            bookJson.setAuthor(shop.getString("author"));
+//            bookJson.setPress(shop.getString("press"));
+//            bookJson.setIsbn(shop.getString("isbn"));
+//            bookJson.setYear(shop.getJSONArray("pressDate").get(0).toString());
+//            bookJson.setMonth(shop.getJSONArray("pressDate").get(1).toString());
+//
+//            String strs = shop.getString("pictures");
+//            strs = strs.replaceAll("\\\"", "");
+//            List<String> PicList = Arrays.asList(strs.replaceAll("[\\[\\]]", "").split(","));
+//
+//            bookJson.setPic(PicList.get(0));
+//
 
-            String strs = shop.getString("pictures");
-            strs = strs.replaceAll("\\\"", "");
-            List<String> PicList = Arrays.asList(strs.replaceAll("[\\[\\]]", "").split(","));
-
-            bookJson.setPic(PicList.get(0));
 //            Toast.makeText(DataDownloader.this, shop.getString("pictures"), Toast.LENGTH_LONG).show();
 
+
+            bookJson.setBookName(shop.getString("name"));
+            bookJson.setAuthor(shop.getString("author"));
+            bookJson.setPress(shop.getString("publishing"));
+            bookJson.setIsbn(shop.getString("code"));
+            String[] date = shop.getString("published").split("-");
+            bookJson.setYear(date[0]);
+            bookJson.setMonth(date[1]);
+            bookJson.setTranslator(shop.getString("translator"));
+            bookJson.setPic(shop.getString("photoUrl"));
             bookJson.setBlank(false);
 
         } catch (JSONException e) {
