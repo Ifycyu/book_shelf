@@ -249,7 +249,7 @@ public class InputBookItemActivity extends AppCompatActivity{
         isbn= this.getIntent().getStringExtra("isbn");
 
         readstatus = this.getIntent().getIntExtra("readstatus",0);
-        doubanscore = this.getIntent().getIntExtra("doubanScore",50);
+        doubanscore = this.getIntent().getIntExtra("doubanScore",0);
         notes  = this.getIntent().getStringExtra("notes");
 
 //        Toast.makeText(this,title,Toast.LENGTH_SHORT).show();

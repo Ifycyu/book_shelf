@@ -42,9 +42,9 @@ dependencies {
 
 
     implementation 'io.github.medyo:android-about-page:2.0.0'
-
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.klinkerapps:sliding-activity:1.1.1'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 

@@ -377,7 +377,10 @@ public class BookListMainActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(BookListMainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(BookListMainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(BookListMainActivity.this, DetailBookItemActivity.class);
+                    i.putExtra(DetailBookItemActivity.Intent_Book_ToEdit, mBooks.get(position));
+                    startActivity(i);
                 }
             });
 
