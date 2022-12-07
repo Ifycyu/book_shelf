@@ -77,6 +77,25 @@ public class BookJson {
     String month;
     String year;
 
+    public int getDoubanScore() {
+        return doubanScore;
+    }
+
+    public void setDoubanScore(int doubanScore) {
+        this.doubanScore = doubanScore;
+    }
+
+    int doubanScore;
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    String description;
+
     public boolean isBlank() {
         return blank;
     }

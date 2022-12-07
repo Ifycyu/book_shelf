@@ -86,9 +86,15 @@ public class BookListMainActivity extends AppCompatActivity {
                         String month = bundle.getString("month");
                         String isbn = bundle.getString("isbn");
                         String cover = bundle.getString("cover");
+                        String notes = bundle.getString("notes");
+                        int readStauts = bundle.getInt("readstatus");
+                        int doubanScore = bundle.getInt("doubanscore");
+
                         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                         BookItem book = new BookItem(title,author,translator,publisher, year,month,isbn, book_no_name,(int)timestamp.getTime());
                         book.setUrl(cover);
+                        book.setReadingStatus(readStauts);
+                        book.setDoubanScore(doubanScore);
                         bookItems.add(bookItems.size(),book);
                         new DataSaver().save(this,bookItems);
 
@@ -120,7 +126,13 @@ public class BookListMainActivity extends AppCompatActivity {
                         String month= bundle.getString("month");
                         String isbn = bundle.getString("isbn");
                         String cover = bundle.getString("cover");
+                        int readstatus = bundle.getInt("readstatus");
+                        int doubanScore = bundle.getInt("doubanscore");
+
+                        String notes = bundle.getString("notes");
+
                         int Order = bundle.getInt("Order");
+
                         mBooks.get(Order).setTITLE(title);
                         mBooks.get(Order).setAUTHORS(author);
                         mBooks.get(Order).setTRANSLATORS(translator);
@@ -129,6 +141,10 @@ public class BookListMainActivity extends AppCompatActivity {
                         mBooks.get(Order).setMonth(month);
                         mBooks.get(Order).setISBN(isbn);
                         mBooks.get(Order).setUrl(cover);
+                        mBooks.get(Order).setReadingStatus(readstatus);
+                        mBooks.get(Order).setDoubanScore(doubanScore);
+
+                        mBooks.get(Order).setNote(notes);
 
                         int data_book_order = get_book_order(mBooks.get(Order).getBookId());
                         bookItems.get(data_book_order).setTITLE(title);
@@ -139,6 +155,10 @@ public class BookListMainActivity extends AppCompatActivity {
                         bookItems.get(data_book_order).setMonth(month);
                         bookItems.get(data_book_order).setISBN(isbn);
                         bookItems.get(data_book_order).setUrl(cover);
+                        bookItems.get(data_book_order).setReadingStatus(readstatus);
+                        bookItems.get(data_book_order).setDoubanScore(doubanScore);
+                        bookItems.get(data_book_order).setNote(notes);
+
                         new DataSaver().save(this,bookItems);
                         updateUI(false,null);
                     }
@@ -251,7 +271,9 @@ public class BookListMainActivity extends AppCompatActivity {
                 String book_title_edit_text_month_string = mBooks.get(item.getOrder()).getMonth();
                 String book_title_edit_text_isbn_string = mBooks.get(item.getOrder()).getISBN();
                 String book_title_edit_text_url_string = mBooks.get(item.getOrder()).getUrl();
-
+                String book_notes_edit_text_string = mBooks.get(item.getOrder()).getNote();
+                int book_read_status = mBooks.get(item.getOrder()).getReadingStatus();
+                int book_doubanScore = mBooks.get(item.getOrder()).getDoubanScore();
 
 
                 bundle.putString("title",book_title_edit_text_title_string);
@@ -262,6 +284,10 @@ public class BookListMainActivity extends AppCompatActivity {
                 bundle.putString("year",book_title_edit_text_year_string);
                 bundle.putString("month",book_title_edit_text_month_string);
                 bundle.putString("cover",book_title_edit_text_url_string);
+                bundle.putString("notes",book_notes_edit_text_string);
+                bundle.putInt("readstatus",book_read_status);
+                bundle.putInt("doubanScore",book_doubanScore);
+
                 bundle.putInt("Order",item.getOrder());
                 intent.putExtras(bundle);
                 editDataLauncher.launch(intent);
@@ -315,7 +341,6 @@ public class BookListMainActivity extends AppCompatActivity {
                 publisher_time = view.findViewById(R.id.list_pubtime_text_view);
                 starView = view.findViewById(R.id.list_star);
 
-
                 //holder的监听事件
                 view.setOnCreateContextMenuListener(this);
             }
@@ -348,6 +373,14 @@ public class BookListMainActivity extends AppCompatActivity {
             holder.getImageView().setImageResource(localDataset.get(position).getCoverResourceId());//设置图片
             holder.getPublisher_text().setText(localDataset.get(position).getPubText());//设置小字
             holder.getPublisher_time().setText(localDataset.get(position).getPubTime());//设置发表时间
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(BookListMainActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
 //            Bitmap imgBitmap =requestWebPhotoBitmap("http://121.196.15.163:81/group1/M00/2C/5D/rBDTaWKpnAOAIbjhAADAZZ_23g8877.jpg");
 //            holder.getImageView().setImageBitmap(imgBitmap);

@@ -114,6 +114,37 @@ public class BookItem implements Serializable{
 
     String url="";
 
+    String note;
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+
+
+    public int getReadingStatus() {
+        return ReadingStatus;
+    }
+
+    public void setReadingStatus(int readingStatus) {
+        ReadingStatus = readingStatus;
+    }
+
+    public int getDoubanScore() {
+        return doubanScore;
+    }
+
+    public void setDoubanScore(int doubanScore) {
+        this.doubanScore = doubanScore;
+    }
+
+    int doubanScore=0;
+    int ReadingStatus=0;
+
 
     // 综合
     public String getPubText(){//作者+出版社

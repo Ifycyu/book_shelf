@@ -3,6 +3,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,24 +18,82 @@
 
     </TextView>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
-    <Button
-        android:id="@+id/button_backup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="备份" />
 
-    <Button
-        android:id="@+id/button_backup_load"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button_backup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="7dp"
+            android:layout_weight="1"
+            android:text="备份" />
+
+        <Button
+            android:id="@+id/button_backup_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="100dp"
+            android:layout_weight="1"
+            android:text="恢复" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/book_edit_detail_bar_text_view1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="恢复" />
+        style="?android:listSeparatorTextViewStyle" >
+    </TextView>
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="20dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="用户协议">-->
+
+<!--        </TextView>-->
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_backup1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_marginStart="100dp"-->
+<!--            android:layout_marginTop="7dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="备份" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_backup_load1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_marginTop="7dp"-->
+<!--            android:layout_marginEnd="100dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:text="恢复" />-->
+
+<!--    </RelativeLayout>-->
+
 
     </LinearLayout>
+
 </LinearLayout>
 

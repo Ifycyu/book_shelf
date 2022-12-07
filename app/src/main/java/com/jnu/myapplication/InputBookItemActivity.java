@@ -17,10 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -28,13 +32,18 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.jnu.myapplication.data.BookItem;
 import com.jnu.myapplication.data.BookJson;
 import com.jnu.myapplication.data.DataDownloader;
 
+import java.util.ArrayList;
 import java.util.List;
 import androidx.appcompat.widget.Toolbar;
-public class InputBookItemActivity extends AppCompatActivity {
+public class InputBookItemActivity extends AppCompatActivity{
 
+    private Spinner readingStatusSpinner;
+    private int readstatus=0;
+    private int doubanscore=0;
     public static final int RESULT_CODE_SUCCESS = 666;
     String cover_url="";
     LinearLayout login;
@@ -56,6 +65,8 @@ public class InputBookItemActivity extends AppCompatActivity {
         book_data();
         search_isbn();
         click_cover();
+        setReadingStatus();
+        set_douban_score();
 
 
     }
@@ -158,6 +169,8 @@ public class InputBookItemActivity extends AppCompatActivity {
             EditText book_publisher_edit_text = findViewById(R.id.book_publisher_edit_text);
             EditText book_pubyear_edit_text = findViewById(R.id.book_pubyear_edit_text);
             EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
+            EditText book_notes_edit_text = findViewById(R.id.book_notes_edit_text);
+            EditText book_labels_edit_text = findViewById(R.id.book_labels_edit_text);
             ImageView BookCover = findViewById(R.id.book_cover_image_view);
 
 
@@ -167,13 +180,18 @@ public class InputBookItemActivity extends AppCompatActivity {
             book_pubyear_edit_text.setText(bookJson.getYear());
             book_pubmonth_edit_text.setText(bookJson.getMonth());
             book_translator_edit_text.setText(bookJson.getTranslator());
+            book_notes_edit_text.setText(bookJson.getDescription());
 
+            doubanscore = bookJson.getDoubanScore();
 //            Bitmap image = requestWebPhotoBitmap(bookJson.getPic());
 //            BookCover.setImageBitmap(image);
             Glide.with(InputBookItemActivity.this)
                     .load(bookJson.getPic())
                     .into(BookCover);
             cover_url = bookJson.getPic();
+
+            RatingBar ratingBar = findViewById(R.id.rating);
+            ratingBar.setRating((float) (doubanscore/20));
         }
 
     }
@@ -211,6 +229,7 @@ public class InputBookItemActivity extends AppCompatActivity {
         String year;
         String month;
         String isbn;
+        String notes;
         int Order;
 //        try {
 //            Bundle bundle=getIntent().getExtras();
@@ -226,7 +245,13 @@ public class InputBookItemActivity extends AppCompatActivity {
         publisher= this.getIntent().getStringExtra("publisher");
         year= this.getIntent().getStringExtra("year");
         month= this.getIntent().getStringExtra("month");
+        cover_url= this.getIntent().getStringExtra("cover");
         isbn= this.getIntent().getStringExtra("isbn");
+
+        readstatus = this.getIntent().getIntExtra("readstatus",0);
+        doubanscore = this.getIntent().getIntExtra("doubanScore",50);
+        notes  = this.getIntent().getStringExtra("notes");
+
 //        Toast.makeText(this,title,Toast.LENGTH_SHORT).show();
 
 
@@ -237,6 +262,9 @@ public class InputBookItemActivity extends AppCompatActivity {
         EditText book_pubyear_edit_text = findViewById(R.id.book_pubyear_edit_text);
         EditText book_pubmonth_edit_text = findViewById(R.id.book_pubmonth_edit_text);
         EditText book_isbn_edit_text = findViewById(R.id.book_isbn_edit_text);
+        EditText book_notes_edit_text = findViewById(R.id.book_notes_edit_text);
+        EditText book_labels_edit_text = findViewById(R.id.book_labels_edit_text);
+        ImageView BookCover = findViewById(R.id.book_cover_image_view);
 
         if(null!=title)
         {
@@ -265,6 +293,16 @@ public class InputBookItemActivity extends AppCompatActivity {
         if(null!=isbn)
         {
             book_isbn_edit_text.setText(isbn);
+        }
+        if(null!=notes)
+        {
+            book_notes_edit_text.setText(notes);
+        }
+        if(null!=cover_url)
+        {
+            Glide.with(InputBookItemActivity.this)
+                    .load(cover_url)
+                    .into(BookCover);
         }
 
         Button button = findViewById(R.id.button_ok);
@@ -303,6 +341,13 @@ public class InputBookItemActivity extends AppCompatActivity {
 
                 String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
                 bundle.putString("isbn",book_isbn_edit_text_string);
+
+                String book_notes_edit_text_string = book_notes_edit_text.getText().toString();
+                bundle.putString("notes",book_notes_edit_text_string);
+
+                bundle.putInt("readstatus", readstatus);
+                bundle.putInt("doubanscore", doubanscore);
+
 
                 bundle.putInt("Order", finalOrder);
 
@@ -387,5 +432,37 @@ public class InputBookItemActivity extends AppCompatActivity {
             dialog.dismiss();
 
         }
+    }
+    private void setReadingStatus() {
+        readingStatusSpinner = (Spinner) findViewById(R.id.reading_status_spinner);
+        ArrayAdapter<CharSequence> readingStatusArrayAdapter = ArrayAdapter.createFromResource(
+                this, R.array.reading_status_array, R.layout.spinner_item);
+        readingStatusArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        readingStatusSpinner.setAdapter(readingStatusArrayAdapter);
+        readingStatusSpinner.setSelection(readstatus);
+        readingStatusSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                readstatus=i;
+//                Log.i(TAG, "Click and set Reading status " + i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+    private void set_douban_score()
+    {
+        RatingBar ratingBar = findViewById(R.id.rating);
+        ratingBar.setRating((float) (doubanscore/20));
+        ratingBar.setOnRatingBarChangeListener((bar, rating, fromUser)->{
+            //当星级评分条的评分发生改变时触发该方法
+            //动态改变图片的透明度，其中255是星级评分条的最大值
+            //5颗星星就代表最大值255
+            doubanscore = (int)(rating*20);
+
+        });
     }
 }

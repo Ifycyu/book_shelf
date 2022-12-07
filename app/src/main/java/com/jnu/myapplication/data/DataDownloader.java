@@ -87,6 +87,9 @@ public class DataDownloader {
             bookJson.setMonth(date[1]);
             bookJson.setTranslator(shop.getString("translator"));
             bookJson.setPic(shop.getString("photoUrl"));
+            bookJson.setDescription(shop.getString("description"));
+            bookJson.setDoubanScore(shop.getInt("doubanScore"));
+
             bookJson.setBlank(false);
 
         } catch (JSONException e) {
