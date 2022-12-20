@@ -70,6 +70,8 @@ public class SettingActivity extends AppCompatActivity {
 //                    DataSaver dataSaver = new DataSaver();
 //                    bookItems = dataSaver.Load(SettingActivity.this);
 //                    write2SDCard("book_data.txt",bookItems);
+                    Toast.makeText(this, "已获取SD卡读写权限", Toast.LENGTH_SHORT).show();
+
                 } else {
                     //用户拒绝授权
                     Toast.makeText(this, "无法获取SD卡读写权限", Toast.LENGTH_SHORT).show();

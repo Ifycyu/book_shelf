@@ -1,22 +1,15 @@
 package com.jnu.myapplication;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,16 +21,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.jnu.myapplication.data.BookItem;
 import com.jnu.myapplication.data.BookJson;
 import com.jnu.myapplication.data.DataDownloader;
 
-import java.util.ArrayList;
-import java.util.List;
 import androidx.appcompat.widget.Toolbar;
 public class InputBookItemActivity extends AppCompatActivity{
 
@@ -46,7 +34,7 @@ public class InputBookItemActivity extends AppCompatActivity{
     private int doubanscore=0;
     public static final int RESULT_CODE_SUCCESS = 666;
     String cover_url="";
-    LinearLayout login;
+    LinearLayout cover_input;
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -98,6 +86,37 @@ public class InputBookItemActivity extends AppCompatActivity{
 //                    }
 //                });
                 book_isbn_edit_text.setText(book_isbn_edit_text_string);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        DataDownloader dataDownloader = new DataDownloader();
+                        String book_isbn_edit_text_string = book_isbn_edit_text.getText().toString();
+                        if (book_isbn_edit_text_string.length()==13 || book_isbn_edit_text_string.length()==10)
+                        {
+//                            String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn="+book_isbn_edit_text_string+"&appKey=ae1718d4587744b0b79f940fbef69e77");
+                            String bookJsonData = dataDownloader.download("https://api.jike.xyz/situ/book/isbn/"+book_isbn_edit_text_string+"?apikey=14444.ac1e36a851666c2ae887aaaed19ad753.8330a20bc4cb468ea6cfee6a31d3248e");
+
+                            //                        String bookJsonData = dataDownloader.download("http://47.99.80.202:6066/openApi/getInfoByIsbn?isbn=9787115461476&appKey=ae1718d4587744b0b79f940fbef69e77");
+                            BookJson bookJson= dataDownloader.parsonJson(bookJsonData);
+                            InputBookItemActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    set_edit_text(bookJson);
+                                }
+                            });
+                        }
+                        else
+                        {
+                            InputBookItemActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(InputBookItemActivity.this, "ISBN为10或13位", Toast.LENGTH_SHORT).show();//不能直接用this
+                                }
+                            });
+                        }
+                    }
+                }).start();
 
             }
             else
@@ -391,9 +410,9 @@ public class InputBookItemActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder dialog=new AlertDialog.Builder(InputBookItemActivity.this);
-                login = (LinearLayout)getLayoutInflater().inflate(R.layout.book_cover_input, null);
+                cover_input = (LinearLayout)getLayoutInflater().inflate(R.layout.book_cover_input, null);
                 dialog.setTitle("图片url地址").setMessage("请输入图片url地址")
-                        .setView(login);
+                        .setView(cover_input);
                 dialog.setPositiveButton("确定", new loginClick());
                 dialog.setNegativeButton("退出", new exitClick());
 //        dialog.setIcon(R.drawable.qq);
@@ -402,8 +421,6 @@ public class InputBookItemActivity extends AppCompatActivity{
                 dialog.show();
             }
         });
-
-
     }
     /*  输入对话框的“确定”按钮事件   */
     class loginClick implements  DialogInterface.OnClickListener
@@ -412,7 +429,7 @@ public class InputBookItemActivity extends AppCompatActivity{
         @Override
         public void onClick(DialogInterface dialog, int which)
         {
-            txt = (EditText)login.findViewById(R.id.imageCover);
+            txt = (EditText) cover_input.findViewById(R.id.imageCover);
 
             ImageView BookCover = findViewById(R.id.book_cover_image_view);
             cover_url = txt.getText().toString();

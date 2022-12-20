@@ -330,8 +330,14 @@
 
                 <RatingBar
                     android:id="@+id/rating"
+                    style="?android:attr/ratingBarStyleIndicator"
+                    android:isIndicator="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="52dp"
                     android:max="10"
                     android:numStars="5"
                     android:progress="2"

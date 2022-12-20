@@ -22,10 +22,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".WebMainActivity"
+            android:exported="false" />
+        <activity
             android:name=".DetailBookItemActivity"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-            android:theme="@style/Theme.Sliding.Light"/>
+            android:theme="@style/Theme.Sliding.Light" />
         <activity
             android:name=".AboutActivity"
             android:exported="false"

@@ -436,6 +436,14 @@ public class BookListMainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_about:
                         startActivity(new Intent(BookListMainActivity.this, AboutActivity.class));
+//                        startActivity(new Intent(BookListMainActivity.this, WebMainActivity.class));
+//
+//                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.nav_search:
+//                        startActivity(new Intent(BookListMainActivity.this, AboutActivity.class));
+                        startActivity(new Intent(BookListMainActivity.this, WebMainActivity.class));
+
 //                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
                         break;
                 }

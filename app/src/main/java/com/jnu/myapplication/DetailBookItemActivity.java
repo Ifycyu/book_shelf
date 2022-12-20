@@ -18,6 +18,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -110,7 +111,9 @@ public class DetailBookItemActivity extends SlidingActivity{
                 ContextCompat.getColor(this, R.color.colorPrimary),
                 ContextCompat.getColor(this, R.color.colorPrimaryDark)
         );
+
         setContent(R.layout.activity_detail_book_item);
+        setImage(R.drawable.jnu);
         setBookInfo();
         setBookDetails();
     }
@@ -250,6 +253,7 @@ public class DetailBookItemActivity extends SlidingActivity{
             String note = mBook.getNote();
             if (note!=null && note.length() != 0) {
                 notesTextView.setText(note);
+                notesTextView.setMovementMethod(new ScrollingMovementMethod());
 //                notesRelativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
 //                    @Override
 //                    public boolean onLongClick(View view) {
@@ -265,6 +269,9 @@ public class DetailBookItemActivity extends SlidingActivity{
                 notesRelativeLayout.setVisibility(View.GONE);
             }
 
+            int doubanscore = mBook.getDoubanScore();
+            RatingBar ratingBar = findViewById(R.id.rating);
+            ratingBar.setRating((float) (doubanscore/20));
 //            List<UUID> labelID = mBook.getLabelID();
 //            if (labelID.size() != 0) {
 //                StringBuilder labelsTitle = new StringBuilder();

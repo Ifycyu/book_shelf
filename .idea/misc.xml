@@ -25,13 +25,17 @@
         <entry key="..\:/Android/library/app/src/main/res/layout/about.xml" value="0.17" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_about.xml" value="0.33" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_detail_book_item.xml" value="0.37395833333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/activity_detail_book_item_header.xml" value="0.359375" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_input_book_item.xml" value="0.33" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Android/library/app/src/main/res/layout/activity_setting.xml" value="0.25677083333333334" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/activity_web_main.xml" value="0.37447916666666664" />
         <entry key="..\:/Android/library/app/src/main/res/layout/book_cover_input.xml" value="0.359375" />
         <entry key="..\:/Android/library/app/src/main/res/layout/book_items_activity.xml" value="0.33" />
         <entry key="..\:/Android/library/app/src/main/res/layout/content_about.xml" value="0.25677083333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/drawer.xml" value="0.2421875" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/fragment_web.xml" value="0.37447916666666664" />
+        <entry key="..\:/Android/library/app/src/main/res/layout/fragment_web_view.xml" value="0.37447916666666664" />
         <entry key="..\:/Android/library/app/src/main/res/layout/ic_notes.xml" value="0.37395833333333334" />
         <entry key="..\:/Android/library/app/src/main/res/layout/item_booklist.xml" value="0.33" />
         <entry key="..\:/Android/library/app/src/main/res/layout/item_main.xml" value="0.37395833333333334" />
