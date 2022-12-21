@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".WebMainActivity"
+            android:name=".WebActivity"
             android:exported="false" />
         <activity
             android:name=".DetailBookItemActivity"

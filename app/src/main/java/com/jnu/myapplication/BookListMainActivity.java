@@ -20,9 +20,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Message;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -42,13 +39,9 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.jnu.myapplication.data.BookItem;
-import com.jnu.myapplication.data.BookJson;
 import com.jnu.myapplication.data.BookShelf;
-import com.jnu.myapplication.data.DataDownloader;
 import com.jnu.myapplication.data.DataSaver;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -442,7 +435,7 @@ public class BookListMainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_search:
 //                        startActivity(new Intent(BookListMainActivity.this, AboutActivity.class));
-                        startActivity(new Intent(BookListMainActivity.this, WebMainActivity.class));
+                        startActivity(new Intent(BookListMainActivity.this, WebActivity.class));
 
 //                        Toast.makeText(BookListMainActivity.this,"About activity ",Toast.LENGTH_SHORT).show();
                         break;
